@@ -41,7 +41,7 @@ const artistSongsList = document.getElementById('artist-songs-list');
 const librarySongsList = document.getElementById('library-songs-list');
 const favCountEl = document.getElementById('fav-count');
 
-// Lista maestra de canciones (.jfif)
+// Lista maestra de canciones
 const canciones = [
     { id: 0, titulo: "Morir de Amor - Miguel Bosé", audioUrl: "assets/canciones/cancion1.mp3", portadaUrl: "assets/imagenes/portada1.jfif" },
     { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", audioUrl: "assets/canciones/cancion2.mp3", portadaUrl: "assets/imagenes/portada2.jfif" },
@@ -136,7 +136,6 @@ function playSong() {
     }
 }
 
-// Corregido: Mantiene el ícono ▶ consistente al pausar
 function pauseSong() {
     isPlaying = false;
     playBtn.textContent = '▶';
@@ -184,7 +183,7 @@ audio.addEventListener('timeupdate', (e) => {
 progressBar.addEventListener('input', () => { audio.currentTime = (progressBar.value / 100) * audio.duration; });
 audio.addEventListener('ended', siguienteCancion);
 
-// LÓGICA DE BÚSQUEDA INTEGRADA (PC Y MÓVIL)
+// LÓGICA DE BÚSQUEDA INTEGRADA Y CORREGIDA
 function procesarBusqueda(inputElement, dropdownElement) {
     const textoUsuario = inputElement.value.toLowerCase().trim();
     dropdownElement.innerHTML = '';
@@ -200,7 +199,14 @@ function procesarBusqueda(inputElement, dropdownElement) {
         dropdownElement.style.display = 'block';
         filtered.forEach(cancion => {
             const item = document.createElement('div');
-            item.classList.add('search-result-item');
+            
+            // Si procesamos el buscador móvil, le inyectamos explícitamente su clase optimizada
+            if(inputElement.id === 'search-input-mobile') {
+                item.classList.add('mobile-result-item');
+            } else {
+                item.classList.add('search-result-item');
+            }
+            
             item.textContent = cancion.titulo;
 
             item.addEventListener('click', () => {
@@ -216,7 +222,7 @@ function procesarBusqueda(inputElement, dropdownElement) {
     } else {
         dropdownElement.style.display = 'block';
         const noResults = document.createElement('div');
-        noResults.classList.add('search-result-item');
+        noResults.className = (inputElement.id === 'search-input-mobile') ? 'mobile-result-item' : 'search-result-item';
         noResults.style.color = '#b3b3b3';
         noResults.textContent = 'No se encontraron canciones';
         dropdownElement.appendChild(noResults);

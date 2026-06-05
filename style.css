@@ -108,7 +108,6 @@ body {
 .controls button { background: none; border: none; color: var(--text-white); font-size: 1.2rem; cursor: pointer; }
 #play-btn { background-color: var(--text-white); color: var(--bg-black); width: 40px; height: 40px; border-radius: 50%; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
 
-/* BARRA DE NAVEGACIÓN INFERIOR (OCULTA EN BASE PC) */
 .bottom-nav { display: none; }
 
 /* MODAL OVERLAY */
@@ -139,26 +138,41 @@ body {
     .artist-profile-header h1, .library-profile-header h1 { font-size: 2rem; }
 
     /* CONTENEDOR DE BÚSQUEDA MÓVIL */
-    .mobile-search-wrapper { padding: 12px 8px; }
-    .mobile-search-wrapper h3 { font-size: 1.8rem; margin: 0 0 16px 0; font-weight: bold; }
+    .mobile-search-wrapper { padding: 12px 8px; position: relative; }
+    .mobile-search-wrapper h3 { font-size: 1.8rem; margin: 0 0 16px 0; font-weight: bold; color: #ffffff; }
     .mobile-search { position: relative; width: 100%; }
-    .mobile-search input { width: 100%; box-sizing: border-box; padding: 14px 18px; border-radius: 6px; background-color: #242424; color: white; border: none; font-size: 1rem; outline: none; }
+    .mobile-search input { width: 100%; box-sizing: border-box; padding: 14px 18px; border-radius: 6px; background-color: #242424; color: #ffffff; border: none; font-size: 1rem; outline: none; }
     
-    /* CORRECCIÓN CRÍTICA: MENÚ DESPLEGABLE DE RESULTADOS MÓVIL */
+    /* MENÚ DESPLEGABLE EN MÓVIL */
     .search-results-dropdown-mobile {
         position: absolute;
         top: 55px;
         left: 0;
         width: 100%;
         box-sizing: border-box;
-        background-color: #242424; /* Color de fondo idéntico al input para simular integración */
-        border-radius: 0 0 8px 8px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+        background-color: #1f1f1f; 
+        border-radius: 6px;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.9);
         display: none;
-        z-index: 1500; /* Asegura superponerse a las secciones de fondo */
-        max-height: 300px;
+        z-index: 9999 !important; /* Forzado absoluto sobre cualquier otro contenedor */
+        max-height: 320px;
         overflow-y: auto;
-        border-top: 1px solid #3a3a3a;
+        border: 1px solid #333333;
+    }
+
+    /* ESTILO DE FILAS DE RESULTADOS MÓVILES */
+    .mobile-result-item {
+        padding: 16px 20px;
+        color: #ffffff !important; /* Letras totalmente blancas */
+        font-weight: 500;
+        font-size: 1rem;
+        cursor: pointer;
+        border-bottom: 1px solid #2a2a2a;
+        background-color: #1f1f1f;
+        display: block;
+    }
+    .mobile-result-item:hover {
+        background-color: #2d2d2d;
     }
 
     .grid-artistas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 4px; }
@@ -186,7 +200,7 @@ body {
     .nav-icon { font-size: 1.3rem; }
     .nav-item.active { color: var(--text-white); font-weight: bold; }
 
-    /* REPRODUCTOR FLOTANTE ACOMODADO */
+    /* REPRODUCTOR FLOTANTE */
     .player-container {
         display: none;
         position: fixed;
