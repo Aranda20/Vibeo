@@ -11,7 +11,7 @@
     <header class="top-bar">
         <div class="logo" id="logo-home" style="cursor: pointer;">🎵 Vibeo</div>
         
-        <div class="search-container">
+        <div class="search-container desktop-search">
             <input type="text" id="search-input" placeholder="¿Qué quieres reproducir?" autocomplete="off">
             <div id="search-results" class="search-results-dropdown"></div>
         </div>
@@ -66,6 +66,16 @@
                 </section>
             </div>
 
+            <div id="view-search-mobile" class="page-view" style="display: none;">
+                <div class="mobile-search-wrapper">
+                    <h3>Buscar</h3>
+                    <div class="search-container mobile-search">
+                        <input type="text" id="search-input-mobile" placeholder="¿Qué quieres escuchar?" autocomplete="off">
+                        <div id="search-results-mobile" class="search-results-dropdown"></div>
+                    </div>
+                </div>
+            </div>
+
             <div id="view-artist" class="page-view" style="display: none;">
                 <button class="btn-back" id="back-to-home-btn">← Volver</button>
                 <div class="artist-profile-header">
@@ -74,8 +84,7 @@
                 </div>
                 <div class="artist-songs-section">
                     <h3>Canciones populares</h3>
-                    <div class="songs-list-container" id="artist-songs-list">
-                        </div>
+                    <div class="songs-list-container" id="artist-songs-list"></div>
                 </div>
             </div>
 
@@ -85,8 +94,7 @@
                     <h1>Tus Canciones Favoritas</h1>
                     <p id="fav-count">0 canciones guardadas</p>
                 </div>
-                <div class="songs-list-container" id="library-songs-list">
-                    </div>
+                <div class="songs-list-container" id="library-songs-list"></div>
             </div>
 
             <section class="player-section">
@@ -120,6 +128,21 @@
             </section>
         </main>
     </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" id="nav-home">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Inicio</span>
+        </div>
+        <div class="nav-item" id="nav-search">
+            <span class="nav-icon">🔍</span>
+            <span class="nav-label">Buscar</span>
+        </div>
+        <div class="nav-item" id="nav-library">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label">Tu Biblioteca</span>
+        </div>
+    </nav>
 
     <div id="player-modal" class="modal-overlay">
         <div class="modal-content">
