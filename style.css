@@ -439,81 +439,202 @@ body {
     transform: scale(1.05);
 }
 /* ======================================================================= */
-/* REGLAS RESPONSIVAS PARA CELULARES (Evita que el diseño se amontone)   */
+/* VISTA PREMIUM ESTILO SPOTIFY MOBILE (MÁXIMO 768PX)                     */
 /* ======================================================================= */
 @media (max-width: 768px) {
     
-    /* 1. Permitir que la app haga scroll vertical en el celular */
+    /* 1. Permitir scroll general suave en el cuerpo del celular */
     body {
         overflow-y: auto;
         height: auto;
+        background-color: #000000;
+        padding-bottom: 110px; /* Espacio libre abajo para que el reproductor no tape el contenido */
     }
 
-    /* 2. Ajustar la barra superior para que el buscador no aplaste los botones */
+    /* 2. Barra Superior Estilo App */
     .top-bar {
         flex-direction: column;
         height: auto;
-        padding: 12px;
+        padding: 16px 12px;
         gap: 12px;
+        background-color: rgba(0, 0, 0, 0.8);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+    }
+
+    .logo {
+        font-size: 1.3rem;
+        align-self: flex-start;
+        padding-left: 8px;
+    }
+
+    .search-container {
+        width: 100%;
+        padding: 0 8px;
     }
 
     .search-container input {
-        width: 100%; /* El buscador ocupará el ancho disponible del celular */
-        max-width: 280px;
-    }
-
-    .auth-buttons {
         width: 100%;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
+        box-sizing: border-box;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        background-color: #242424;
     }
 
-    /* 3. Reordenar el diseño: En celular la biblioteca se va abajo de los artistas */
+    /* Ocultar botones de Auth en móvil para ganar espacio limpio */
+    .auth-buttons {
+        display: none;
+    }
+
+    /* 3. Reorganización del Layout Estilo Mobile */
     .app-layout {
         flex-direction: column;
+        padding: 8px;
         height: auto;
-        overflow: visible;
     }
 
+    /* Ocultar la barra lateral estática de biblioteca en celulares */
     .sidebar {
-        width: auto;
-        order: 2; /* Pasa abajo */
+        display: none;
     }
 
     .main-content {
-        order: 1; /* Los artistas y el reproductor se quedan arriba */
+        padding: 8px;
+        background: none; /* Quitamos fondos grises intermedios */
+    }
+
+    /* 4. Grid de Artistas/Canciones de 2 Columnas Exactas (Estilo Spotify) */
+    .grid-artistas {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Dos tarjetas por fila */
+        gap: 12px;
+        padding: 4px;
+    }
+
+    .artist-card {
+        background-color: #181818;
         padding: 12px;
-    }
-
-    /* 4. ARREGLO CRÍTICO: Ajustar el reproductor para pantallas delgadas */
-    .player-container {
-        flex-direction: column; /* Cambia de horizontal a vertical */
-        align-items: center;
-        gap: 16px;
-        padding: 16px;
-        width: auto;
-    }
-
-    .player-main-controls {
-        width: 100%;
-        text-align: center;
-    }
-
-    .track-info {
-        justify-content: center !important;
+        border-radius: 6px;
+        text-align: left; /* Alineado a la izquierda */
+        display: flex;
         flex-direction: column;
-        gap: 6px;
+    }
+
+    .artist-card img {
+        width: 100%;
+        aspect-ratio: 1 / 1; /* Imagen perfectamente cuadrada */
+        object-fit: cover;
+        border-radius: 4px;
         margin-bottom: 8px;
     }
 
-    .progress-container {
+    .artist-name {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin: 4px 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Si el título es largo añade '...' */
+    }
+
+    .artist-role {
+        font-size: 0.75rem;
+        color: #b3b3b3;
+    }
+
+    /* 5. REPRODUCTOR COMPACTO FLOTANTE FIJO INFERIOR (Barra Sticky) */
+    .player-container {
+        position: fixed;
+        bottom: 12px; /* Flota sutilmente sobre el borde inferior */
+        left: 8px;
+        right: 8px;
+        width: calc(100% - 16px); /* Centrado dinámico */
+        box-sizing: border-box;
+        background-color: #282828; /* Gris característico de Spotify barra */
+        border-radius: 8px;
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: row; /* Diseño horizontal idéntico a Spotify */
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+        z-index: 99;
+    }
+
+    /* Mini Carátula izquierda */
+    .cover-art {
+        width: 44px;
+        height: 44px;
+        border-radius: 4px;
+    }
+
+    .player-main-controls {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    /* Título y Botón Ampliar alineados en una sola línea horizontal */
+    .track-info {
+        display: flex;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center;
         width: 100%;
     }
 
-    .controls {
+    .track-info h3 {
+        font-size: 0.85rem;
+        font-weight: 500;
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #open-modal-btn {
+        font-size: 0.75rem !important;
+        padding: 2px 6px;
+        background-color: #3e3e3e !important;
+        color: #ffffff !important;
+        border-radius: 4px;
+    }
+
+    /* Barra de progreso sutil y delgada abajo del título */
+    .progress-container {
         width: 100%;
-        justify-content: center;
-        gap: 20px;
+        gap: 0px;
+    }
+
+    .progress-container span {
+        display: none; /* Ocultamos los números de tiempo en el mini reproductor para limpiar espacio */
+    }
+
+    .progress-container input[type="range"] {
+        height: 2px;
+        margin: 0;
+    }
+
+    /* Botones de control a la derecha extrema */
+    .controls {
+        width: auto;
+        display: flex;
+        gap: 12px;
+    }
+
+    .controls .nav-btn {
+        display: none; /* Ocultamos anterior y siguiente en el mini reproductor móvil para máxima limpieza */
+    }
+
+    #play-btn {
+        padding: 0;
+        background: none;
+        color: white;
+        font-size: 1.4rem;
+        cursor: pointer;
     }
 }
