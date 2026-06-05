@@ -3,23 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibeo</title>
+    <title>Vibeo - Reproductor Web</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="player-container">
-        <h2>Vibeo</h2>
+    <header class="top-bar">
+        <div class="logo">🎵 Vibeo</div>
         
-        <img id="cover" src="assets/imagenes/portada1.jfif" alt="Portada" class="cover-art">
-        <h3 id="track-title">Cargando canción...</h3>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="¿Qué quieres reproducir?" autocomplete="off">
+            <div id="search-results" class="search-results-dropdown"></div>
+        </div>
         
-        <audio id="audio" src="assets/canciones/cancion1.mp3"></audio>
+        <div class="auth-buttons">
+            <button class="btn-transparent">Regístrate</button>
+            <button class="btn-white">Iniciar sesión</button>
+        </div>
+    </header>
 
-        <div class="controls">
-            <button id="prev-btn" class="nav-btn">⏮</button>
-            <button id="play-btn">▶ Reproducir</button>
-            <button id="next-btn" class="nav-btn">⏭</button>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="library-card">
+                <div class="library-header">
+                    <span>📚 Tu biblioteca</span>
+                    <button class="add-btn">+</button>
+                </div>
+                <div class="create-playlist">
+                    <h4>Crea tu primera playlist</h4>
+                    <p>¡Es muy fácil! Te vamos a ayudar</p>
+                    <button class="btn-white-small">Crear playlist</button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <section class="section-container">
+                <h2>Artistas Populares</h2>
+                <div class="grid-artistas">
+                    <div class="artist-card">
+                        <img src="assets/imagenes/portada.jpg" alt="Miguel Bosé">
+                        <p class="artist-name">Miguel Bosé</p>
+                        <p class="artist-role">Artista</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-container">
+                <h2>Reproduciendo Ahora</h2>
+                <div class="player-container">
+                    <img id="cover" src="assets/imagenes/portada1.jfif" alt="Portada" class="cover-art">
+                    
+                    <div class="player-main-controls">
+                        <div class="track-info" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 id="track-title">Cargando canción...</h3>
+                            <button id="open-modal-btn" style="background: none; border: none; color: #1db954; cursor: pointer; font-size: 0.9rem; font-weight: bold;">⛶ Ampliar</button>
+                        </div>
+                        
+                        <audio id="audio" src="assets/canciones/cancion1.mp3"></audio>
+
+                        <div class="progress-container">
+                            <span id="current-time">0:00</span>
+                            <input type="range" id="progress-bar" min="0" max="100" value="0">
+                            <span id="duration">0:00</span>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button id="prev-btn" class="nav-btn">⏮</button>
+                        <button id="play-btn">▶ Reproducir</button>
+                        <button id="next-btn" class="nav-btn">⏭</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="player-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-modal-btn" class="modal-close">✕ Cerrar</button>
+            
+            <img id="modal-cover" src="assets/imagenes/portada.jpg" alt="Portada Expandida" class="modal-cover-art">
+            
+            <div class="modal-track-info">
+                <h2 id="modal-track-title">Nombre de la Canción</h2>
+                <p id="modal-track-artist">Artista</p>
+            </div>
+
+            <div class="modal-progress-container">
+                <span id="modal-current-time">0:00</span>
+                <input type="range" id="modal-progress-bar" min="0" max="100" value="0">
+                <span id="modal-duration">0:00</span>
+            </div>
+
+            <div class="modal-controls">
+                <button id="modal-prev-btn" class="modal-nav-btn">⏮</button>
+                <button id="modal-play-btn">▶ Reproducir</button>
+                <button id="modal-next-btn" class="modal-nav-btn">⏭</button> 
+            </div>
         </div>
     </div>
 
