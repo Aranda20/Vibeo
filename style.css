@@ -1,0 +1,98 @@
+/* Configuración general de la página */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0b0b0e; /* Fondo oscuro profundo */
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Contenedor del reproductor */
+.player-container {
+    background: linear-gradient(145deg, #15151e, #101017);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    width: 320px;
+}
+
+h2 {
+    font-size: 1.2rem;
+    color: #a0a0a5;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+/* Estilo de la carátula de la música */
+.cover-art {
+    width: 240px;
+    height: 240px;
+    border-radius: 15px;
+    object-fit: cover;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    background-color: #252533;
+}
+
+h3 {
+    font-size: 1.4rem;
+    margin: 10px 0 25px 0;
+    font-weight: 600;
+}
+
+/* Contenedor de botones alineados en fila */
+.controls {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 25px;
+}
+
+/* Botones de Anterior y Siguiente */
+.nav-btn {
+    background: none;
+    border: none;
+    color: #a0a0a5;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.nav-btn:hover {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.nav-btn:active {
+    transform: scale(0.9);
+}
+
+/* Botón Central de Play/Pausa estilo Spotify */
+#play-btn {
+    background-color: #1db954;
+    color: #000000;
+    border: none;
+    padding: 15px 35px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
+}
+
+#play-btn:hover {
+    transform: scale(1.05);
+    background-color: #1ed760;
+    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.5);
+}
+
+#play-btn:active {
+    transform: scale(0.98);
+}
