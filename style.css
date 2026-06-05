@@ -108,7 +108,7 @@ body {
 .controls button { background: none; border: none; color: var(--text-white); font-size: 1.2rem; cursor: pointer; }
 #play-btn { background-color: var(--text-white); color: var(--bg-black); width: 40px; height: 40px; border-radius: 50%; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
 
-/* BARRA DE NAVEGACIÓN INFERIOR (OCULTA EN PC EN BASE) */
+/* BARRA DE NAVEGACIÓN INFERIOR (OCULTA EN BASE PC) */
 .bottom-nav { display: none; }
 
 /* MODAL OVERLAY */
@@ -127,30 +127,46 @@ body {
 #modal-play-btn { background-color: var(--text-white); color: var(--bg-black); border: none; border-radius: 50%; width: 64px; height: 64px; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
 
 /* ======================================================================= */
-/* CONFIGURACIÓN CRÍTICA: RESPONSIVA PARA MÓVILES                         */
+/* MEDIA QUERY RESPONSIVA (MÓVILES)                                       */
 /* ======================================================================= */
 @media (max-width: 768px) {
-    body { overflow-y: auto; height: auto; background-color: #000000; padding-bottom: 160px; } /* Añadimos espacio libre al fondo para evitar colisiones visuales */
+    body { overflow-y: auto; height: auto; background-color: #000000; padding-bottom: 160px; }
     
-    /* Ocultar elementos de escritorio */
     .top-bar, .sidebar, .desktop-search { display: none !important; }
     
     .app-layout { flex-direction: column; padding: 8px; height: auto; }
     .main-content { padding: 8px; background: none; margin: 0; }
     .artist-profile-header h1, .library-profile-header h1 { font-size: 2rem; }
 
-    /* Buscador exclusivo móvil */
+    /* CONTENEDOR DE BÚSQUEDA MÓVIL */
     .mobile-search-wrapper { padding: 12px 8px; }
     .mobile-search-wrapper h3 { font-size: 1.8rem; margin: 0 0 16px 0; font-weight: bold; }
-    .mobile-search input { width: 100%; box-sizing: border-box; padding: 14px 18px; border-radius: 4px; background-color: #242424; color: white; border: none; font-size: 1rem; outline: none; }
-    .mobile-search .search-results-dropdown { top: 58px; width: calc(100% - 16px); left: 8px; }
+    .mobile-search { position: relative; width: 100%; }
+    .mobile-search input { width: 100%; box-sizing: border-box; padding: 14px 18px; border-radius: 6px; background-color: #242424; color: white; border: none; font-size: 1rem; outline: none; }
+    
+    /* CORRECCIÓN CRÍTICA: MENÚ DESPLEGABLE DE RESULTADOS MÓVIL */
+    .search-results-dropdown-mobile {
+        position: absolute;
+        top: 55px;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: #242424; /* Color de fondo idéntico al input para simular integración */
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+        display: none;
+        z-index: 1500; /* Asegura superponerse a las secciones de fondo */
+        max-height: 300px;
+        overflow-y: auto;
+        border-top: 1px solid #3a3a3a;
+    }
 
     .grid-artistas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 4px; }
     .artist-card { padding: 12px; border-radius: 6px; text-align: left; display: flex; flex-direction: column; width: auto; }
     .artist-card img { width: 100%; aspect-ratio: 1 / 1; border-radius: 4px; margin-bottom: 8px; }
     .artist-name { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    /* BARRA DE MENÚ INFERIOR ESTILO SPOTIFY APP */
+    /* BARRA DE MENÚ INFERIOR */
     .bottom-nav {
         display: flex;
         position: fixed;
@@ -166,26 +182,15 @@ body {
         box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
     }
 
-    .nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: var(--text-muted);
-        cursor: pointer;
-        font-size: 0.75rem;
-        gap: 4px;
-        flex: 1;
-        padding: 6px 0;
-    }
-
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); cursor: pointer; font-size: 0.75rem; gap: 4px; flex: 1; padding: 6px 0; }
     .nav-icon { font-size: 1.3rem; }
     .nav-item.active { color: var(--text-white); font-weight: bold; }
 
-    /* REPRODUCTOR FLOTANTE ACOMODADO POR ENCIMA DEL BOTTOM NAV */
+    /* REPRODUCTOR FLOTANTE ACOMODADO */
     .player-container {
         display: none;
         position: fixed;
-        bottom: 74px; /* ← UBICACIÓN CLAVE: 64px del menú + 10px de separación estética */
+        bottom: 74px;
         left: 8px;
         right: 8px;
         width: calc(100% - 16px);

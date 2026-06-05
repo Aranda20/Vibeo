@@ -88,7 +88,7 @@ navLibrary.addEventListener('click', () => {
     cambiarVista(viewLibrary);
 });
 
-// Eventos de botones extras para volver al Inicio (Sincronizan la barra inferior)
+// Eventos de botones extras para volver al Inicio
 logoHome.addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
 backToHomeBtn.addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
 backToHomeBtn2.addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
@@ -136,6 +136,7 @@ function playSong() {
     }
 }
 
+// Corregido: Mantiene el ícono ▶ consistente al pausar
 function pauseSong() {
     isPlaying = false;
     playBtn.textContent = '▶';
@@ -183,7 +184,7 @@ audio.addEventListener('timeupdate', (e) => {
 progressBar.addEventListener('input', () => { audio.currentTime = (progressBar.value / 100) * audio.duration; });
 audio.addEventListener('ended', siguienteCancion);
 
-// LÓGICA DE BÚSQUEDA INTEGRADA (PROCESA PC Y MÓVIL POR IGUAL)
+// LÓGICA DE BÚSQUEDA INTEGRADA (PC Y MÓVIL)
 function procesarBusqueda(inputElement, dropdownElement) {
     const textoUsuario = inputElement.value.toLowerCase().trim();
     dropdownElement.innerHTML = '';
