@@ -13,31 +13,30 @@ const durationEl = document.getElementById('duration');
 const searchInput = document.getElementById('search-input');
 const searchResults = document.getElementById('search-results');
 
-// Playlist Oficial de Vibeo
+// Playlist Oficial de Vibeo (Actualizada con tus 8 canciones y portadas .jfif)
 const canciones = [
     {
         id: 0,
-        titulo: "Morir de Amor - M. Bosé",
+        titulo: "Morir de Amor - Miguel Bosé",
         audioUrl: "assets/canciones/cancion1.mp3",
         portadaUrl: "assets/imagenes/portada1.jfif"
     },
     {
         id: 1,
-        titulo: "Segunda Canción de Vibeo",
+        titulo: "Sé Que Te Amaré - Leo Dan",
         audioUrl: "assets/canciones/cancion2.mp3",
         portadaUrl: "assets/imagenes/portada2.jfif"
     },
     {
         id: 2,
-        titulo: "Tercera Canción de Vibeo",
+        titulo: "Te He Prometido - Leo Dan",
         audioUrl: "assets/canciones/cancion3.mp3",
         portadaUrl: "assets/imagenes/portada3.jfif"
-        },
+    },
     {
         id: 3,
         titulo: "Hasta Que Amanezca - Joan Sebastian",
         audioUrl: "assets/canciones/cancion4.mp3",
-        path: "assets/imagenes/portada4.jfif", // Temporal por consistencia interna
         portadaUrl: "assets/imagenes/portada4.jfif"
     },
     {
@@ -64,142 +63,39 @@ const canciones = [
         audioUrl: "assets/canciones/cancion8.mp3",
         portadaUrl: "assets/imagenes/portada8.jfif"
     }
-    
 ];
 
 let cancionActualIndex = 0;
 let isPlaying = false;
 
-// Cargar información de una canción específica
+// Función para cargar los datos de una canción en el reproductor principal
 function cargarCancion(cancion) {
     trackTitle.textContent = cancion.titulo;
     audio.src = cancion.audioUrl;
     cover.src = cancion.portadaUrl;
 }
 
-// Inicializar reproductor con la primera pista de la lista
-cargarCancion(canciones[cancionActualIndex]);
-
-// Controles Play / Pause
+// Función para reproducir
 function playSong() {
     isPlaying = true;
     playBtn.textContent = '⏸ Pausar';
     audio.play();
+    if (playerModal.style.display === 'flex') {
+        modalPlayBtn.textContent = '⏸ Pausar';
+    }
 }
 
+// Función para pausar
 function pauseSong() {
     isPlaying = false;
     playBtn.textContent = '▶ Reproducir';
     audio.pause();
-}
-
-// Cambiar de pista
-function siguienteCancion() {
-    cancionActualIndex++;
-    if (cancionActualIndex > canciones.length - 1) {
-        cancionActualIndex = 0;
-    }
-    cargarCancion(canciones[cancionActualIndex]);
-    if (isPlaying) playSong();
-}
-
-function anteriorCancion() {
-    cancionActualIndex--;
-    if (cancionActualIndex < 0) {
-        cancionActualIndex = canciones.length - 1;
-    }
-    cargarCancion(canciones[cancionActualIndex]);
-    if (isPlaying) playSong();
-}
-
-// Sincronizar barra de tiempo transcurrido
-function actualizarProgreso(e) {
-    const { duration, currentTime } = e.srcElement;
-    if (duration) {
-        const porcentajeProgreso = (currentTime / duration) * 100;
-        progressBar.value = porcentajeProgreso;
-
-        let currentMinutes = Math.floor(currentTime / 60);
-        let currentSeconds = Math.floor(currentTime % 60);
-        if (currentSeconds < 10) currentSeconds = `0${currentSeconds}`;
-        currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
-
-        let durationMinutes = Math.floor(duration / 60);
-        let durationSeconds = Math.floor(duration % 60);
-        if (durationSeconds < 10) durationSeconds = `0${durationSeconds}`;
-        durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+    if (playerModal.style.display === 'flex') {
+        modalPlayBtn.textContent = '▶ Reproducir';
     }
 }
 
-function fijarProgreso() {
-    const anchoTotal = audio.duration;
-    audio.currentTime = (progressBar.value / 100) * anchoTotal;
-}
-
-// ==========================================
-// NUEVA LÓGICA: INTERACTIVIDAD DEL BUSCADOR
-// ==========================================
-searchInput.addEventListener('input', (e) => {
-    const textoBuscado = e.target.value.toLowerCase().trim();
-
-    // Si el campo de texto está vacío, ocultamos la caja flotante y paramos
-    if (textoBuscado === '') {
-        searchResults.style.display = 'none';
-        searchResults.innerHTML = '';
-        return;
-    }
-
-    // Filtramos las canciones que contengan la palabra escrita
-    const cancionesFiltradas = canciones.filter(cancion => 
-        cancion.titulo.toLowerCase().includes(textoBuscado)
-    );
-
-    // Si hay coincidencias, creamos los elementos visuales
-    if (cancionesFiltradas.length > 0) {
-        searchResults.innerHTML = ''; // Limpiar resultados anteriores
-        searchResults.style.display = 'block'; // Mostrar contenedor flotante
-
-        cancionesFiltradas.forEach(cancion => {
-            const item = document.createElement('div');
-            item.classList.add('search-result-item');
-            
-            item.innerHTML = `
-                <img src="${cancion.portadaUrl}" alt="Cover">
-                <div class="search-result-info">
-                    <span class="search-result-title">${cancion.titulo}</span>
-                    <span class="search-result-type">Canción</span>
-                </div>
-            `;
-
-            // EVENTO CLICK: Al tocar el resultado, se reproduce automáticamente
-            item.addEventListener('click', () => {
-                cancionActualIndex = cancion.id; // Cambiar el índice global
-                cargarCancion(cancion); // Cargar datos
-                playSong(); // Forzar la reproducción inmediata
-                
-                // Limpiar buscador y cerrar el menú desplegable
-                searchInput.value = '';
-                searchResults.style.display = 'none';
-                searchResults.innerHTML = '';
-            });
-
-            searchResults.appendChild(item);
-        });
-    } else {
-        // Si escribe pero no encuentra nada relevante
-        searchResults.innerHTML = '<div style="padding: 16px; color: #b3b3b3; font-size: 0.9rem;">No se encontraron resultados</div>';
-        searchResults.style.display = 'block';
-    }
-});
-
-// Cerrar el buscador flotante si el usuario hace clic afuera de la barra
-document.addEventListener('click', (e) => {
-    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-        searchResults.style.display = 'none';
-    }
-});
-
-// Eventos de interacción
+// Evento del botón de Play/Pausa principal
 playBtn.addEventListener('click', () => {
     if (isPlaying) {
         pauseSong();
@@ -208,16 +104,113 @@ playBtn.addEventListener('click', () => {
     }
 });
 
+// Cambiar a la siguiente canción
+function siguienteCancion() {
+    cancionActualIndex = (cancionActualIndex + 1) % canciones.length;
+    cargarCancion(canciones[cancionActualIndex]);
+    playSong();
+}
+
+// Cambiar a la canción anterior
+function anteriorCancion() {
+    cancionActualIndex = (cancionActualIndex - 1 + canciones.length) % canciones.length;
+    cargarCancion(canciones[cancionActualIndex]);
+    playSong();
+}
+
 nextBtn.addEventListener('click', siguienteCancion);
 prevBtn.addEventListener('click', anteriorCancion);
-audio.addEventListener('timeupdate', actualizarProgreso);
-audio.addEventListener('ended', siguienteCancion);
-progressBar.addEventListener('input', fijarProgreso);
-// ==========================================
-// NUEVA ADICIÓN: COMPORTAMIENTO PANEL MODAL
-// ==========================================
 
-// 1. Capturar los nuevos elementos del DOM del modal
+// Actualizar barra de progreso y tiempos
+function actualizarProgreso(e) {
+    const { duration, currentTime } = e.srcElement;
+    if (duration) {
+        const porcentajeProgreso = (currentTime / duration) * 100;
+        progressBar.value = porcentajeProgreso;
+
+        // Calcular minutos y segundos actuales
+        let currentMinutes = Math.floor(currentTime / 60);
+        let currentSeconds = Math.floor(currentTime % 60);
+        if (currentSeconds < 10) currentSeconds = `0${currentSeconds}`;
+        currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
+
+        // Calcular minutos y segundos totales
+        let durationMinutes = Math.floor(duration / 60);
+        let durationSeconds = Math.floor(duration % 60);
+        if (durationSeconds < 10) durationSeconds = `0${durationSeconds}`;
+        durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+    }
+}
+
+audio.addEventListener('timeupdate', actualizarProgreso);
+
+// Permitir saltar a cualquier punto de la canción arrastrando la barra
+progressBar.addEventListener('input', () => {
+    const nuevoTiempo = (progressBar.value / 100) * audio.duration;
+    audio.currentTime = nuevoTiempo;
+});
+
+// Al terminar una canción, pasa a la siguiente automáticamente
+audio.addEventListener('ended', siguienteCancion);
+
+// LÓGICA INTEGRADAL DEL BUSCADOR PREDICTIVO
+searchInput.addEventListener('input', () => {
+    const textoUsuario = searchInput.value.toLowerCase().trim();
+    searchResults.innerHTML = '';
+
+    if (textoUsuario === '') {
+        searchResults.style.display = 'none';
+        return;
+    }
+
+    const cancionesFiltradas = canciones.filter(cancion => 
+        cancion.titulo.toLowerCase().includes(textoUsuario)
+    );
+
+    if (cancionesFiltradas.length > 0) {
+        searchResults.style.display = 'block';
+        cancionesFiltradas.forEach(cancion => {
+            const item = document.createElement('div');
+            item.classList.add('search-result-item');
+            item.textContent = cancion.titulo;
+
+            // Al hacer clic en un resultado del buscador
+            item.addEventListener('click', () => {
+                cancionActualIndex = cancion.id;
+                cargarCancion(cancion);
+                playSong();
+
+                // HACE VISIBLE EL REPRODUCTOR AUTOMÁTICAMENTE
+                document.querySelector('.player-container').style.display = 'flex';
+
+                // Limpiar buscador y cerrar lista
+                searchInput.value = '';
+                searchResults.style.display = 'none';
+                searchResults.innerHTML = '';
+            });
+
+            searchResults.appendChild(item);
+        });
+    } else {
+        searchResults.style.display = 'block';
+        const noResults = document.createElement('div');
+        noResults.classList.add('search-result-item');
+        noResults.style.color = '#b3b3b3';
+        noResults.textContent = 'No se encontraron canciones';
+        searchResults.appendChild(noResults);
+    }
+});
+
+// Cerrar buscador si se hace clic fuera del cuadro
+document.addEventListener('click', (e) => {
+    if (e.target !== searchInput && e.target !== searchResults) {
+        searchResults.style.display = 'none';
+    }
+});
+
+// =======================================================================
+// LÓGICA COMPLETA DEL MODAL EXPANDIBLE (VISTA COMPLETA MÓVIL)
+// =======================================================================
 const playerModal = document.getElementById('player-modal');
 const openModalBtn = document.getElementById('open-modal-btn');
 const closeModalBtn = document.getElementById('close-modal-btn');
@@ -229,79 +222,70 @@ const modalTrackArtist = document.getElementById('modal-track-artist');
 const modalProgressBar = document.getElementById('modal-progress-bar');
 const modalCurrentTimeEl = document.getElementById('modal-current-time');
 const modalDurationEl = document.getElementById('modal-duration');
+
 const modalPlayBtn = document.getElementById('modal-play-btn');
 const modalPrevBtn = document.getElementById('modal-prev-btn');
 const modalNextBtn = document.getElementById('modal-next-btn');
 
-// 2. Función para actualizar los textos y portada dentro del modal (Vista Espejo)
+// Función para extraer el artista y separar el título de forma limpia
 function sincronizarDatosModal() {
     const cancionActual = canciones[cancionActualIndex];
-    
-    // Separamos el título y el artista si vienen juntos en tu string (ej: "Morir de Amor - M. Bosé")
+    modalCover.src = cancionActual.portadaUrl;
+
     if (cancionActual.titulo.includes(' - ')) {
         const partes = cancionActual.titulo.split(' - ');
         modalTrackTitle.textContent = partes[0];
         modalTrackArtist.textContent = partes[1];
     } else {
         modalTrackTitle.textContent = cancionActual.titulo;
-        modalTrackArtist.textContent = "Artista";
+        modalTrackArtist.textContent = "Artista Desconocido";
     }
-    
-    modalCover.src = cancionActual.portadaUrl;
 }
 
-// 3. Eventos para abrir y cerrar la ventana flotante
+// Abrir Modal
 openModalBtn.addEventListener('click', () => {
     sincronizarDatosModal();
-    // Actualizar el estado visual del botón Play del modal inmediatamente
-    modalPlayBtn.textContent = isPlaying ? '⏸ Pausar' : '▶ Reproducir';
     playerModal.style.display = 'flex';
+    modalPlayBtn.textContent = isPlaying ? '⏸ Pausar' : '▶ Reproducir';
 });
 
+// Cerrar Modal
 closeModalBtn.addEventListener('click', () => {
     playerModal.style.display = 'none';
 });
 
-// 4. Hacer que los botones del modal ejecuten tus funciones originales ya existentes
+// Controles dentro del Modal
 modalPlayBtn.addEventListener('click', () => {
     if (isPlaying) {
         pauseSong();
-        modalPlayBtn.textContent = '▶ Reproducir';
     } else {
         playSong();
-        modalPlayBtn.textContent = '⏸ Pausar';
     }
 });
 
 modalNextBtn.addEventListener('click', () => {
-    siguienteCancion();       // Llama a tu función original
-    sincronizarDatosModal();   // Actualiza los textos del modal
-    modalPlayBtn.textContent = isPlaying ? '⏸ Pausar' : '▶ Reproducir';
+    siguienteCancion();
+    sincronizarDatosModal();
 });
 
 modalPrevBtn.addEventListener('click', () => {
-    anteriorCancion();        // Llama a tu función original
-    sincronizarDatosModal();   // Actualiza los textos del modal
-    modalPlayBtn.textContent = isPlaying ? '⏸ Pausar' : '▶ Reproducir';
+    anteriorCancion();
+    sincronizarDatosModal();
 });
 
-// 5. Vincular el avance del tiempo y la barra con el reproductor principal
+// Sincronización del tiempo transcurrido en el modal
 audio.addEventListener('timeupdate', () => {
-    // Si el modal está visible, replicamos los tiempos de tu función actualizarProgreso
     if (playerModal.style.display === 'flex' && audio.duration) {
         const porcentaje = (audio.currentTime / audio.duration) * 100;
         modalProgressBar.value = porcentaje;
-        
         modalCurrentTimeEl.textContent = currentTimeEl.textContent;
         modalDurationEl.textContent = durationEl.textContent;
     }
 });
 
-// Permitir arrastrar la barra del modal para cambiar el tiempo de la canción
 modalProgressBar.addEventListener('input', () => {
     audio.currentTime = (modalProgressBar.value / 100) * audio.duration;
 });
 
-// Sincronizar el botón de play del modal si la canción cambia o se pausa desde fuera
 audio.addEventListener('play', () => { modalPlayBtn.textContent = '⏸ Pausar'; });
 audio.addEventListener('pause', () => { modalPlayBtn.textContent = '▶ Reproducir'; });

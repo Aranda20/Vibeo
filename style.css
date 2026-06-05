@@ -37,137 +37,126 @@ body {
 }
 
 .search-container {
-    position: relative; /* Clave para posicionar el menú flotante relativo a este cuadro */
+    position: relative;
 }
 
 .search-container input {
-    background-color: #242424;
-    border: none;
-    border-radius: 50px;
-    padding: 12px 24px;
     width: 350px;
-    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    border: none;
+    background-color: #242424;
+    color: var(--text-white);
     font-size: 0.9rem;
     outline: none;
 }
 
-/* MENÚ DESPLEGABLE FLOTANTE DE RESULTADOS */
+/* CAJA FLOTANTE PARA RESULTADOS PREDICTIVOS */
 .search-results-dropdown {
     position: absolute;
-    top: 50px;
+    top: 55px;
     left: 0;
     width: 100%;
-    background-color: #181818;
+    background-color: #282828;
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
-    z-index: 100;
-    max-height: 300px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    display: none;
+    z-index: 1000;
+    max-height: 250px;
     overflow-y: auto;
-    display: none; /* Se activa mediante JS */
 }
 
-/* Elementos individuales dentro de la lista de búsqueda */
 .search-result-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
-    gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-white);
     cursor: pointer;
-    transition: background-color 0.2s;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #3e3e3e;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
 }
 
 .search-result-item:hover {
-    background-color: #2a2a2a;
+    background-color: #3e3e3e;
 }
 
-.search-result-item img {
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
-    object-fit: cover;
-}
-
-.search-result-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.search-result-title {
+.auth-buttons button {
+    margin-left: 16px;
+    font-size: 1rem;
     font-weight: bold;
-    font-size: 0.9rem;
+    padding: 12px 24px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-transparent {
+    background-color: transparent;
+    color: var(--text-muted);
+}
+
+.btn-transparent:hover {
     color: var(--text-white);
 }
 
-.search-result-type {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+.btn-white {
+    background-color: var(--text-white);
+    color: var(--bg-black);
 }
 
-/* BOTONES DE AUTENTICACIÓN */
-.auth-buttons .btn-transparent {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-weight: bold;
-    margin-right: 24px;
-    cursor: pointer;
-}
-
-.auth-buttons .btn-transparent:hover {
-    color: white;
-}
-
-.auth-buttons .btn-white {
-    background-color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 12px 28px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.auth-buttons .btn-white:hover {
+.btn-white:hover {
     transform: scale(1.05);
 }
 
-/* DISTRIBUCIÓN PANELES */
+/* ESTRUCTURA GENERAL DE LA APLICACIÓN */
 .app-layout {
     display: flex;
     flex: 1;
-    padding: 8px;
-    gap: 8px;
     height: calc(100vh - 64px);
+    overflow: hidden;
 }
 
-/* BARRA LATERAL */
 .sidebar {
-    width: 300px;
+    width: 320px;
+    background-color: var(--bg-black);
+    padding: 8px;
+}
+
+.library-card {
     background-color: var(--bg-dark-gray);
     border-radius: 8px;
-    padding: 16px;
+    padding: 20px;
+    height: calc(100% - 40px);
 }
 
 .library-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     color: var(--text-muted);
     font-weight: bold;
-    margin-bottom: 20px;
+    font-size: 1.1rem;
 }
 
 .add-btn {
     background: none;
     border: none;
     color: var(--text-muted);
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     cursor: pointer;
+}
+
+.add-btn:hover {
+    color: var(--text-white);
 }
 
 .create-playlist {
     background-color: var(--bg-light-gray);
-    padding: 16px;
     border-radius: 8px;
+    padding: 16px;
+    margin-top: 24px;
 }
 
 .create-playlist h4 {
@@ -175,42 +164,42 @@ body {
 }
 
 .create-playlist p {
-    color: var(--text-muted);
-    font-size: 0.85rem;
     margin: 0 0 16px 0;
+    font-size: 0.85rem;
+    color: var(--text-white);
 }
 
 .btn-white-small {
-    background-color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 8px 16px;
+    background-color: var(--text-white);
+    color: var(--bg-black);
     font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: none;
     cursor: pointer;
 }
 
-/* CONTENIDO PRINCIPAL */
+/* CONTENIDO PRINCIPAL (ARTISTAS) */
 .main-content {
     flex: 1;
     background-color: var(--bg-dark-gray);
+    margin-top: 8px;
+    margin-right: 8px;
     border-radius: 8px;
     padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     overflow-y: auto;
 }
 
-.section-container {
-    margin-bottom: 40px;
-}
-
-.section-container h2 {
+.artists-section h3 {
     font-size: 1.5rem;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
-/* GRID ARTISTAS */
 .grid-artistas {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    display: flex;
     gap: 24px;
 }
 
@@ -218,9 +207,9 @@ body {
     background-color: #181818;
     padding: 16px;
     border-radius: 8px;
+    width: 160px;
     text-align: center;
     transition: background-color 0.3s;
-    cursor: pointer;
 }
 
 .artist-card:hover {
@@ -228,39 +217,38 @@ body {
 }
 
 .artist-card img {
-    width: 120px;
-    height: 120px;
+    width: 100%;
     border-radius: 50%;
-    object-fit: cover;
     margin-bottom: 12px;
 }
 
 .artist-name {
     font-weight: bold;
-    margin: 0 0 4px 0;
-    font-size: 0.95rem;
+    margin-bottom: 4px;
 }
 
 .artist-role {
     color: var(--text-muted);
     font-size: 0.85rem;
-    margin: 0;
 }
 
-/* REPRODUCTOR COMPACTO */
+/* ======================================================================= */
+/* REPRODUCTOR COMPACTO GENERAL (INICIA EN NONE PARA OCULTARLO EN PC)     */
+/* ======================================================================= */
 .player-container {
-    display: flex;
+    display: none; /* ← Oculto al inicio */
     align-items: center;
     background-color: var(--bg-light-gray);
     padding: 16px 24px;
     border-radius: 8px;
     gap: 24px;
     max-width: 700px;
+    margin-top: 20px;
 }
 
 .cover-art {
-    width: 70px;
-    height: 70px;
+    width: 56px;
+    height: 56px;
     border-radius: 4px;
     object-fit: cover;
 }
@@ -272,24 +260,44 @@ body {
     gap: 8px;
 }
 
+.track-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .track-info h3 {
     margin: 0;
-    font-size: 1.05rem;
+    font-size: 1rem;
+}
+
+#open-modal-btn {
+    background: none;
+    border: 1px solid #555;
+    color: var(--text-muted);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+#open-modal-btn:hover {
+    color: white;
+    border-color: white;
 }
 
 .progress-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     color: var(--text-muted);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
 }
 
 .progress-container input[type="range"] {
     flex: 1;
     accent-color: var(--spotify-green);
     cursor: pointer;
-    height: 4px;
 }
 
 .controls {
@@ -298,69 +306,63 @@ body {
     gap: 16px;
 }
 
-.nav-btn {
+.controls button {
     background: none;
     border: none;
-    color: var(--text-muted);
-    font-size: 1.5rem;
+    color: var(--text-white);
+    font-size: 1.2rem;
     cursor: pointer;
-    transition: color 0.2s;
-}
-
-.nav-btn:hover {
-    color: white;
 }
 
 #play-btn {
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 50px;
-    padding: 10px 22px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: transform 0.2s;
+    background-color: var(--text-white);
+    color: var(--bg-black);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #play-btn:hover {
     transform: scale(1.05);
 }
-/* ========================================== */
-/* ESTILOS NUEVOS PARA LA VISTA EXPANDIDA     */
-/* ========================================== */
+
+/* MODAL EXPANDIDO (ESTILOS GENERALES) */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.9); /* Fondo oscuro semitransparente */
-    display: none; /* Oculto por defecto */
+    background-color: #000000;
+    display: none;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2000;
 }
 
 .modal-content {
-    background-color: #121212;
-    padding: 40px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 450px;
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     position: relative;
 }
 
 .modal-close {
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 10px;
+    left: 20px;
     background: none;
     border: none;
-    color: #b3b3b3;
-    font-size: 1rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
     cursor: pointer;
 }
 
@@ -371,87 +373,95 @@ body {
 .modal-cover-art {
     width: 280px;
     height: 280px;
-    border-radius: 8px;
     object-fit: cover;
-    margin-bottom: 24px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    border-radius: 8px;
+    margin-top: 40px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.7);
+}
+
+.modal-track-info {
+    align-self: flex-start;
+    margin-top: 32px;
+    padding-left: 10px;
+    text-align: left;
 }
 
 .modal-track-info h2 {
-    margin: 0 0 8px 0;
-    font-size: 1.6rem;
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: bold;
 }
 
 .modal-track-info p {
-    margin: 0 0 24px 0;
-    color: #b3b3b3;
+    margin: 4px 0 0 0;
+    color: var(--text-muted);
     font-size: 1rem;
 }
 
 .modal-progress-container {
     display: flex;
     align-items: center;
+    width: 100%;
     gap: 12px;
-    color: #b3b3b3;
+    margin-top: 24px;
+    color: var(--text-muted);
     font-size: 0.85rem;
-    margin-bottom: 24px;
 }
 
 .modal-progress-container input[type="range"] {
     flex: 1;
-    accent-color: #1db954;
+    accent-color: #ffffff;
+    height: 4px;
     cursor: pointer;
-    height: 5px;
 }
 
 .modal-controls {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 24px;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 32px;
+    width: 100%;
 }
 
 .modal-nav-btn {
     background: none;
     border: none;
-    color: #b3b3b3;
-    font-size: 1.8rem;
+    color: var(--text-white);
+    font-size: 2rem;
     cursor: pointer;
-}
-
-.modal-nav-btn:hover {
-    color: white;
 }
 
 #modal-play-btn {
-    background-color: white;
-    color: black;
+    background-color: var(--text-white);
+    color: var(--bg-black);
     border: none;
-    border-radius: 50px;
-    padding: 12px 28px;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
-    font-size: 1rem;
-    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #modal-play-btn:hover {
     transform: scale(1.05);
 }
+
 /* ======================================================================= */
 /* VISTA PREMIUM ESTILO SPOTIFY MOBILE (MÁXIMO 768PX)                     */
 /* ======================================================================= */
 @media (max-width: 768px) {
-    
-    /* 1. Permitir scroll general suave en el cuerpo del celular */
     body {
         overflow-y: auto;
         height: auto;
         background-color: #000000;
-        padding-bottom: 110px; /* Espacio libre abajo para que el reproductor no tape el contenido */
+        padding-bottom: 110px;
     }
 
-    /* 2. Barra Superior Estilo App */
     .top-bar {
         flex-direction: column;
         height: auto;
@@ -483,32 +493,28 @@ body {
         background-color: #242424;
     }
 
-    /* Ocultar botones de Auth en móvil para ganar espacio limpio */
     .auth-buttons {
         display: none;
     }
 
-    /* 3. Reorganización del Layout Estilo Mobile */
     .app-layout {
         flex-direction: column;
         padding: 8px;
         height: auto;
     }
 
-    /* Ocultar la barra lateral estática de biblioteca en celulares */
     .sidebar {
         display: none;
     }
 
     .main-content {
         padding: 8px;
-        background: none; /* Quitamos fondos grises intermedios */
+        background: none;
     }
 
-    /* 4. Grid de Artistas/Canciones de 2 Columnas Exactas (Estilo Spotify) */
     .grid-artistas {
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Dos tarjetas por fila */
+        grid-template-columns: repeat(2, 1fr);
         gap: 12px;
         padding: 4px;
     }
@@ -517,14 +523,15 @@ body {
         background-color: #181818;
         padding: 12px;
         border-radius: 6px;
-        text-align: left; /* Alineado a la izquierda */
+        text-align: left;
         display: flex;
         flex-direction: column;
+        width: auto;
     }
 
     .artist-card img {
         width: 100%;
-        aspect-ratio: 1 / 1; /* Imagen perfectamente cuadrada */
+        aspect-ratio: 1 / 1;
         object-fit: cover;
         border-radius: 4px;
         margin-bottom: 8px;
@@ -536,7 +543,7 @@ body {
         margin: 4px 0;
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; /* Si el título es largo añade '...' */
+        text-overflow: ellipsis;
     }
 
     .artist-role {
@@ -544,27 +551,28 @@ body {
         color: #b3b3b3;
     }
 
-    /* 5. REPRODUCTOR COMPACTO FLOTANTE FIJO INFERIOR (Barra Sticky) */
+    /* REPRODUCTOR COMPACTO FLOTANTE FIJO INFERIOR (MÓVIL) */
     .player-container {
+        display: none; /* Activado dinámicamente por JS al buscar */
         position: fixed;
-        bottom: 12px; /* Flota sutilmente sobre el borde inferior */
+        bottom: 12px;
         left: 8px;
         right: 8px;
-        width: calc(100% - 16px); /* Centrado dinámico */
+        width: calc(100% - 16px);
         box-sizing: border-box;
-        background-color: #282828; /* Gris característico de Spotify barra */
+        background-color: #282828;
         border-radius: 8px;
         padding: 8px 12px;
-        display: flex;
-        flex-direction: row; /* Diseño horizontal idéntico a Spotify */
+        flex-direction: row;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
         z-index: 99;
+        margin-top: 0;
+        max-width: none;
     }
 
-    /* Mini Carátula izquierda */
     .cover-art {
         width: 44px;
         height: 44px;
@@ -578,7 +586,6 @@ body {
         gap: 4px;
     }
 
-    /* Título y Botón Ampliar alineados en una sola línea horizontal */
     .track-info {
         display: flex;
         flex-direction: row !important;
@@ -604,14 +611,13 @@ body {
         border-radius: 4px;
     }
 
-    /* Barra de progreso sutil y delgada abajo del título */
     .progress-container {
         width: 100%;
         gap: 0px;
     }
 
     .progress-container span {
-        display: none; /* Ocultamos los números de tiempo en el mini reproductor para limpiar espacio */
+        display: none;
     }
 
     .progress-container input[type="range"] {
@@ -619,7 +625,6 @@ body {
         margin: 0;
     }
 
-    /* Botones de control a la derecha extrema */
     .controls {
         width: auto;
         display: flex;
@@ -627,7 +632,7 @@ body {
     }
 
     .controls .nav-btn {
-        display: none; /* Ocultamos anterior y siguiente en el mini reproductor móvil para máxima limpieza */
+        display: none;
     }
 
     #play-btn {
@@ -636,5 +641,7 @@ body {
         color: white;
         font-size: 1.4rem;
         cursor: pointer;
+        width: auto;
+        height: auto;
     }
 }

@@ -38,36 +38,49 @@
         </aside>
 
         <main class="main-content">
-            
-            <section class="section-container">
-                <h2>Artistas Populares</h2>
+            <section class="artists-section">
+                <h3>Artistas Populares</h3>
                 <div class="grid-artistas">
                     <div class="artist-card">
-                        <img src="assets/imagenes/portada.jpg" alt="Miguel Bosé">
-                        <p class="artist-name">Miguel Bosé</p>
-                        <p class="artist-role">Artista</p>
+                        <img src="assets/imagenes/portada1.jfif" alt="Miguel Bosé">
+                        <div class="artist-name">Miguel Bosé</div>
+                        <div class="artist-role">Artista</div>
+                    </div>
+                    <div class="artist-card">
+                        <img src="assets/imagenes/portada2.jfif" alt="Leo Dan">
+                        <div class="artist-name">Leo Dan</div>
+                        <div class="artist-role">Artista</div>
+                    </div>
+                    <div class="artist-card">
+                        <img src="assets/imagenes/portada4.jfif" alt="Joan Sebastian">
+                        <div class="artist-name">Joan Sebastian</div>
+                        <div class="artist-role">Artista</div>
+                    </div>
+                    <div class="artist-card">
+                        <img src="assets/imagenes/portada5.jfif" alt="Los Iracundos">
+                        <div class="artist-name">Los Iracundos</div>
+                        <div class="artist-role">Artista</div>
                     </div>
                 </div>
             </section>
 
-            <section class="section-container">
-                <h2>Reproduciendo Ahora</h2>
+            <section class="player-section">
                 <div class="player-container">
-                    <img id="cover" src="assets/imagenes/portada1.jfif" alt="Portada" class="cover-art">
+                    <img id="cover" src="" alt="Portada" class="cover-art">
                     
                     <div class="player-main-controls">
-                        <div class="track-info" style="display: flex; justify-content: space-between; align-items: center;">
-                            <h3 id="track-title">Cargando canción...</h3>
-                            <button id="open-modal-btn" style="background: none; border: none; color: #1db954; cursor: pointer; font-size: 0.9rem; font-weight: bold;">⛶ Ampliar</button>
+                        <div class="track-info">
+                            <h3 id="track-title"></h3>
+                            <button id="open-modal-btn">⛶ Ampliar</button>
                         </div>
                         
-                        <audio id="audio" src="assets/canciones/cancion1.mp3"></audio>
-
                         <div class="progress-container">
                             <span id="current-time">0:00</span>
                             <input type="range" id="progress-bar" min="0" max="100" value="0">
                             <span id="duration">0:00</span>
                         </div>
+                        
+                        <audio id="audio" src=""></audio>
                     </div>
 
                     <div class="controls">
@@ -77,7 +90,6 @@
                     </div>
                 </div>
             </section>
-
         </main>
     </div>
 
@@ -85,10 +97,10 @@
         <div class="modal-content">
             <button id="close-modal-btn" class="modal-close">✕ Cerrar</button>
             
-            <img id="modal-cover" src="assets/imagenes/portada.jpg" alt="Portada Expandida" class="modal-cover-art">
+            <img id="modal-cover" src="" alt="Portada Expandida" class="modal-cover-art">
             
             <div class="modal-track-info">
-                <h2 id="modal-track-title">Nombre de la Canción</h2>
+                <h2 id="modal-track-title">Canción</h2>
                 <p id="modal-track-artist">Artista</p>
             </div>
 
@@ -101,7 +113,7 @@
             <div class="modal-controls">
                 <button id="modal-prev-btn" class="modal-nav-btn">⏮</button>
                 <button id="modal-play-btn">▶ Reproducir</button>
-                <button id="modal-next-btn" class="modal-nav-btn">⏭</button> 
+                <button id="modal-next-btn" class="modal-nav-btn">⏭</button>
             </div>
         </div>
     </div>
