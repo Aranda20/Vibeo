@@ -438,3 +438,82 @@ body {
 #modal-play-btn:hover {
     transform: scale(1.05);
 }
+/* ======================================================================= */
+/* REGLAS RESPONSIVAS PARA CELULARES (Evita que el diseño se amontone)   */
+/* ======================================================================= */
+@media (max-width: 768px) {
+    
+    /* 1. Permitir que la app haga scroll vertical en el celular */
+    body {
+        overflow-y: auto;
+        height: auto;
+    }
+
+    /* 2. Ajustar la barra superior para que el buscador no aplaste los botones */
+    .top-bar {
+        flex-direction: column;
+        height: auto;
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .search-container input {
+        width: 100%; /* El buscador ocupará el ancho disponible del celular */
+        max-width: 280px;
+    }
+
+    .auth-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    /* 3. Reordenar el diseño: En celular la biblioteca se va abajo de los artistas */
+    .app-layout {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+    }
+
+    .sidebar {
+        width: auto;
+        order: 2; /* Pasa abajo */
+    }
+
+    .main-content {
+        order: 1; /* Los artistas y el reproductor se quedan arriba */
+        padding: 12px;
+    }
+
+    /* 4. ARREGLO CRÍTICO: Ajustar el reproductor para pantallas delgadas */
+    .player-container {
+        flex-direction: column; /* Cambia de horizontal a vertical */
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        width: auto;
+    }
+
+    .player-main-controls {
+        width: 100%;
+        text-align: center;
+    }
+
+    .track-info {
+        justify-content: center !important;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    .progress-container {
+        width: 100%;
+    }
+
+    .controls {
+        width: 100%;
+        justify-content: center;
+        gap: 20px;
+    }
+}
