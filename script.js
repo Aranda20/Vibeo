@@ -41,11 +41,12 @@ const artistSongsList = document.getElementById('artist-songs-list');
 const librarySongsList = document.getElementById('library-songs-list');
 const favCountEl = document.getElementById('fav-count');
 
-// Lista maestra de canciones
+// Lista maestra de canciones (IDs normalizados y limpios)
 const canciones = [
     { id: 0, titulo: "Morir de Amor - Miguel Bosé", audioUrl: "assets/canciones/cancion1.mp3", portadaUrl: "assets/imagenes/portada1.jfif" },
     { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", audioUrl: "assets/canciones/cancion2.mp3", portadaUrl: "assets/imagenes/portada2.jfif" },
     { id: 2, titulo: "Te He Prometido - Leo Dan", audioUrl: "assets/canciones/cancion3.mp3", portadaUrl: "assets/imagenes/portada3.jfif" },
+    { id: 3, titulo: "Hasta Que Amanezca - Joan Sebastian", audioUrl: "assets/canciones/cancion4.mp3", portadaUrl: "assets/imagenes/portada4.jfif" },
     { id: 4, titulo: "Te Lo Pido de Rodillas - Los Iracundos", audioUrl: "assets/canciones/cancion5.mp3", portadaUrl: "assets/imagenes/portada5.jfif" },
     { id: 5, titulo: "Yo Esperaré Tu Cambiarás - Darwin del Ecuador", audioUrl: "assets/canciones/cancion6.mp3", portadaUrl: "assets/imagenes/portada6.jfif" },
     { id: 6, titulo: "¿Qué pasará mañana? - José Luis Perales", audioUrl: "assets/canciones/cancion7.mp3", portadaUrl: "assets/imagenes/portada7.jfif" },
@@ -63,7 +64,6 @@ function cambiarVista(vistaActiva) {
     viewArtist.style.display = 'none';
     viewLibrary.style.display = 'none';
     
-    // Forzar el cierre de los resultados de búsqueda al cambiar de página
     searchResultsMobile.style.display = 'none';
     searchResults.style.display = 'none';
 
@@ -89,6 +89,7 @@ sidebarLibraryBtn.addEventListener('click', () => { resetActiveNav(navLibrary); 
 // GESTIÓN DE FAVORITOS
 function actualizarBotonesCorazon() {
     const cancionActual = canciones[cancionActualIndex];
+    if(!cancionActual) return;
     const esFavorito = favoritos.includes(cancionActual.id);
     playerFavBtn.textContent = esFavorito ? '❤️' : '♡';
     document.getElementById('modal-fav-btn').textContent = esFavorito ? '❤️' : '♡';
@@ -109,6 +110,7 @@ playerFavBtn.addEventListener('click', (e) => { e.stopPropagation(); alternarFav
 
 // CARGAR CANCIÓN EN EL REPRODUCTOR
 function cargarCancion(cancion) {
+    if (!cancion) return;
     trackTitle.textContent = cancion.titulo;
     audio.src = cancion.audioUrl;
     cover.src = cancion.portadaUrl;
@@ -118,7 +120,7 @@ function cargarCancion(cancion) {
 function playSong() {
     isPlaying = true;
     playBtn.textContent = '⏸';
-    audio.play();
+    audio.play().catch(error => console.log("Error al reproducir audio:", error));
     if (playerModal.style.display === 'flex') { modalPlayBtn.textContent = '⏸ Pausar'; }
 }
 
@@ -167,7 +169,7 @@ audio.addEventListener('timeupdate', (e) => {
 progressBar.addEventListener('input', () => { audio.currentTime = (progressBar.value / 100) * audio.duration; });
 audio.addEventListener('ended', siguienteCancion);
 
-// LÓGICA DE BÚSQUEDA FLOTANTE ARREGLADA
+// LÓGICA DE BÚSQUEDA FLOTANTE REPARADA CON INDEX TRACING
 function procesarBusqueda(inputElement, dropdownElement) {
     const textoUsuario = inputElement.value.toLowerCase().trim();
     dropdownElement.innerHTML = '';
@@ -186,11 +188,18 @@ function procesarBusqueda(inputElement, dropdownElement) {
             item.classList.add('mobile-result-item');
             item.textContent = cancion.titulo;
 
+            // Al hacer clic, buscamos la posición real de la canción dentro del array maestro
             item.addEventListener('click', () => {
-                cancionActualIndex = cancion.id;
-                cargarCancion(cancion);
-                playSong();
-                document.querySelector('.player-container').style.display = 'flex';
+                const targetIndex = canciones.findIndex(c => c.id === cancion.id);
+                if (targetIndex !== -1) {
+                    cancionActualIndex = targetIndex;
+                    cargarCancion(canciones[cancionActualIndex]);
+                    playSong();
+                    
+                    // Mostrar contenedor del reproductor
+                    const containerReproductor = document.querySelector('.player-container');
+                    if(containerReproductor) containerReproductor.style.display = 'flex';
+                }
                 inputElement.value = '';
                 dropdownElement.style.display = 'none';
             });
@@ -231,10 +240,13 @@ document.querySelectorAll('.artist-card').forEach(card => {
             `;
             
             fila.addEventListener('click', () => {
-                cancionActualIndex = cancion.id;
-                cargarCancion(cancion);
-                playSong();
-                document.querySelector('.player-container').style.display = 'flex';
+                const targetIndex = canciones.findIndex(c => c.id === cancion.id);
+                if (targetIndex !== -1) {
+                    cancionActualIndex = targetIndex;
+                    cargarCancion(canciones[cancionActualIndex]);
+                    playSong();
+                    document.querySelector('.player-container').style.display = 'flex';
+                }
             });
             artistSongsList.appendChild(fila);
         });
@@ -268,10 +280,13 @@ function renderizarBiblioteca() {
 
             fila.addEventListener('click', (e) => {
                 if(e.target.classList.contains('remove-fav-btn')) return;
-                cancionActualIndex = cancion.id;
-                cargarCancion(cancion);
-                playSong();
-                document.querySelector('.player-container').style.display = 'flex';
+                const targetIndex = canciones.findIndex(c => c.id === cancion.id);
+                if (targetIndex !== -1) {
+                    cancionActualIndex = targetIndex;
+                    cargarCancion(canciones[cancionActualIndex]);
+                    playSong();
+                    document.querySelector('.player-container').style.display = 'flex';
+                }
             });
 
             fila.querySelector('.remove-fav-btn').addEventListener('click', (e) => {
@@ -300,6 +315,7 @@ const modalFavBtn = document.getElementById('modal-fav-btn');
 
 function sincronizarDatosModal() {
     const cancionActual = canciones[cancionActualIndex];
+    if(!cancionActual) return;
     modalCover.src = cancionActual.portadaUrl;
     if (cancionActual.titulo.includes(' - ')) {
         const partes = cancionActual.titulo.split(' - ');
