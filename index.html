@@ -69,7 +69,7 @@
             <div id="view-search-mobile" class="page-view" style="display: none;">
                 <div class="mobile-search-wrapper">
                     <h3>Buscar</h3>
-                    <div class="search-container mobile-search">
+                    <div class="mobile-search-box">
                         <input type="text" id="search-input-mobile" placeholder="¿Qué quieres escuchar?" autocomplete="off">
                         <div id="search-results-mobile" class="search-results-dropdown-mobile"></div>
                     </div>
@@ -147,9 +147,7 @@
     <div id="player-modal" class="modal-overlay">
         <div class="modal-content">
             <button id="close-modal-btn" class="modal-close">✕ Cerrar</button>
-            
             <img id="modal-cover" src="" alt="Portada Expandida" class="modal-cover-art">
-            
             <div class="modal-track-info-row">
                 <div class="modal-track-info">
                     <h2 id="modal-track-title">Canción</h2>
@@ -157,13 +155,11 @@
                 </div>
                 <button id="modal-fav-btn" class="heart-btn modal-heart">♡</button>
             </div>
-
             <div class="modal-progress-container">
                 <span id="modal-current-time">0:00</span>
                 <input type="range" id="modal-progress-bar" min="0" max="100" value="0">
                 <span id="modal-duration">0:00</span>
             </div>
-
             <div class="modal-controls">
                 <button id="modal-prev-btn" class="modal-nav-btn">⏮</button>
                 <button id="modal-play-btn">▶ Reproducir</button>

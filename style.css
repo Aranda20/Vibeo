@@ -65,7 +65,7 @@ body {
 .create-playlist p { margin: 0 0 16px 0; font-size: 0.85rem; color: var(--text-muted); }
 .btn-white-small { background-color: var(--text-white); color: var(--bg-black); font-weight: bold; padding: 8px 16px; border-radius: 50px; border: none; cursor: pointer; }
 
-/* CONTENIDO PRINCIPAL */
+/* CONTENIDO PRINCIPAL (PC) */
 .main-content { flex: 1; background-color: var(--bg-dark-gray); margin-top: 8px; margin-right: 8px; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto; }
 .page-view { width: 100%; flex: 1; }
 
@@ -75,25 +75,6 @@ body {
 .artist-card img { width: 100%; border-radius: 50%; margin-bottom: 12px; }
 .artist-name { font-weight: bold; margin-bottom: 4px; }
 .artist-role { color: var(--text-muted); font-size: 0.85rem; }
-
-/* INTERFACES INTERNAS */
-.btn-back { background-color: #242424; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
-.artist-profile-header, .library-profile-header { background: linear-gradient(transparent, rgba(0,0,0,0.5)), #2b2b2b; padding: 40px 20px; border-radius: 8px; margin-bottom: 24px; }
-.artist-profile-header h1, .library-profile-header h1 { font-size: 3rem; margin: 0; font-weight: 900; }
-.verified-badge { color: #3d91ff; font-weight: bold; margin-top: 8px; }
-
-.songs-list-container { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
-.song-row-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; }
-.song-row-item:hover { background-color: rgba(255,255,255,0.1); }
-.song-left-part { display: flex; align-items: center; gap: 16px; }
-.track-number { color: var(--text-muted); width: 20px; text-align: center; }
-.mini-row-cover { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
-.track-name-text { font-weight: 500; font-size: 0.95rem; }
-.play-row-icon { color: var(--spotify-green); font-size: 1.1rem; }
-
-.title-fav-group { display: flex; align-items: center; gap: 12px; }
-.heart-btn { background: none; border: none; color: #ff4a4a; font-size: 1.3rem; cursor: pointer; padding: 0; }
-.remove-fav-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
 
 /* REPRODUCTOR ESCRITORIO */
 .player-container { display: none; align-items: center; background-color: var(--bg-light-gray); padding: 16px 24px; border-radius: 8px; gap: 24px; max-width: 700px; margin-top: 20px; }
@@ -108,9 +89,10 @@ body {
 .controls button { background: none; border: none; color: var(--text-white); font-size: 1.2rem; cursor: pointer; }
 #play-btn { background-color: var(--text-white); color: var(--bg-black); width: 40px; height: 40px; border-radius: 50%; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
 
+/* BARRA DE RESPONSIVIDAD INFERIOR MÓVIL */
 .bottom-nav { display: none; }
 
-/* MODAL OVERLAY */
+/* MODALES Y ADICIONALES */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000000; display: none; justify-content: center; align-items: center; z-index: 2000; }
 .modal-content { width: 100%; max-width: 400px; padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
 .modal-close { position: absolute; top: 10px; left: 20px; background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; }
@@ -125,6 +107,22 @@ body {
 .modal-nav-btn { background: none; border: none; color: var(--text-white); font-size: 2rem; cursor: pointer; }
 #modal-play-btn { background-color: var(--text-white); color: var(--bg-black); border: none; border-radius: 50%; width: 64px; height: 64px; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
 
+.btn-back { background-color: #242424; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
+.artist-profile-header, .library-profile-header { background: linear-gradient(transparent, rgba(0,0,0,0.5)), #2b2b2b; padding: 40px 20px; border-radius: 8px; margin-bottom: 24px; }
+.artist-profile-header h1, .library-profile-header h1 { font-size: 3rem; margin: 0; font-weight: 900; }
+.verified-badge { color: #3d91ff; font-weight: bold; margin-top: 8px; }
+.songs-list-container { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.song-row-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-radius: 6px; cursor: pointer; transition: background-color 0.2s; }
+.song-row-item:hover { background-color: rgba(255,255,255,0.1); }
+.song-left-part { display: flex; align-items: center; gap: 16px; }
+.track-number { color: var(--text-muted); width: 20px; text-align: center; }
+.mini-row-cover { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
+.track-name-text { font-weight: 500; font-size: 0.95rem; }
+.play-row-icon { color: var(--spotify-green); font-size: 1.1rem; }
+.title-fav-group { display: flex; align-items: center; gap: 12px; }
+.heart-btn { background: none; border: none; color: #ff4a4a; font-size: 1.3rem; cursor: pointer; padding: 0; }
+.remove-fav-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; }
+
 /* ======================================================================= */
 /* MEDIA QUERY RESPONSIVA (MÓVILES)                                       */
 /* ======================================================================= */
@@ -134,46 +132,49 @@ body {
     .top-bar, .sidebar, .desktop-search { display: none !important; }
     
     .app-layout { flex-direction: column; padding: 8px; height: auto; }
-    .main-content { padding: 8px; background: none; margin: 0; }
+    
+    /* CAMBIO CLAVE MÓVIL: Evita que herede overflow restrictivos del entorno de escritorio */
+    .main-content { padding: 8px; background: none; margin: 0; overflow: visible !important; }
     .artist-profile-header h1, .library-profile-header h1 { font-size: 2rem; }
 
     /* CONTENEDOR DE BÚSQUEDA MÓVIL */
-    .mobile-search-wrapper { padding: 12px 8px; position: relative; }
+    .mobile-search-wrapper { padding: 12px 8px; }
     .mobile-search-wrapper h3 { font-size: 1.8rem; margin: 0 0 16px 0; font-weight: bold; color: #ffffff; }
-    .mobile-search { position: relative; width: 100%; }
-    .mobile-search input { width: 100%; box-sizing: border-box; padding: 14px 18px; border-radius: 6px; background-color: #242424; color: #ffffff; border: none; font-size: 1rem; outline: none; }
     
-    /* MENÚ DESPLEGABLE EN MÓVIL */
+    .mobile-search-box { position: relative; width: 100%; }
+    .mobile-search-box input { width: 100%; box-sizing: border-box; padding: 14px 18px; border-radius: 6px; background-color: #242424; color: #ffffff; border: none; font-size: 1rem; outline: none; }
+    
+    /* SOLUCIÓN AL CONFICLO DE CORTE (OVERFLOW): Usamos Fixed para liberarlo del layout principal */
     .search-results-dropdown-mobile {
-        position: absolute;
-        top: 55px;
-        left: 0;
-        width: 100%;
+        position: fixed; /* Flota sobre toda la ventana gráfica del celular sin límites */
+        top: 145px;      /* Justo debajo de tu barra de texto móvil */
+        left: 16px;
+        right: 16px;
+        width: calc(100% - 32px);
         box-sizing: border-box;
         background-color: #1f1f1f; 
-        border-radius: 6px;
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.9);
+        border-radius: 8px;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.95);
         display: none;
-        z-index: 9999 !important; /* Forzado absoluto sobre cualquier otro contenedor */
-        max-height: 320px;
+        z-index: 99999 !important; /* Capa suprema sobre reproductores y menús */
+        max-height: 280px;
         overflow-y: auto;
         border: 1px solid #333333;
     }
 
-    /* ESTILO DE FILAS DE RESULTADOS MÓVILES */
+    /* FILAS INTERNAS DEL MENÚ DESPLEGABLE MÓVIL */
     .mobile-result-item {
         padding: 16px 20px;
-        color: #ffffff !important; /* Letras totalmente blancas */
+        color: #ffffff !important;
         font-weight: 500;
-        font-size: 1rem;
+        font-size: 1.05rem;
         cursor: pointer;
         border-bottom: 1px solid #2a2a2a;
         background-color: #1f1f1f;
         display: block;
+        text-align: left;
     }
-    .mobile-result-item:hover {
-        background-color: #2d2d2d;
-    }
+    .mobile-result-item:hover { background-color: #2d2d2d; }
 
     .grid-artistas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 4px; }
     .artist-card { padding: 12px; border-radius: 6px; text-align: left; display: flex; flex-direction: column; width: auto; }

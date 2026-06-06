@@ -46,7 +46,6 @@ const canciones = [
     { id: 0, titulo: "Morir de Amor - Miguel Bosé", audioUrl: "assets/canciones/cancion1.mp3", portadaUrl: "assets/imagenes/portada1.jfif" },
     { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", audioUrl: "assets/canciones/cancion2.mp3", portadaUrl: "assets/imagenes/portada2.jfif" },
     { id: 2, titulo: "Te He Prometido - Leo Dan", audioUrl: "assets/canciones/cancion3.mp3", portadaUrl: "assets/imagenes/portada3.jfif" },
-    { id: 3, titulo: "Hasta Que Amanezca - Joan Sebastian", audioUrl: "assets/canciones/cancion4.mp3", portadaUrl: "assets/imagenes/portada4.jfif" },
     { id: 4, titulo: "Te Lo Pido de Rodillas - Los Iracundos", audioUrl: "assets/canciones/cancion5.mp3", portadaUrl: "assets/imagenes/portada5.jfif" },
     { id: 5, titulo: "Yo Esperaré Tu Cambiarás - Darwin del Ecuador", audioUrl: "assets/canciones/cancion6.mp3", portadaUrl: "assets/imagenes/portada6.jfif" },
     { id: 6, titulo: "¿Qué pasará mañana? - José Luis Perales", audioUrl: "assets/canciones/cancion7.mp3", portadaUrl: "assets/imagenes/portada7.jfif" },
@@ -63,6 +62,11 @@ function cambiarVista(vistaActiva) {
     viewSearchMobile.style.display = 'none';
     viewArtist.style.display = 'none';
     viewLibrary.style.display = 'none';
+    
+    // Forzar el cierre de los resultados de búsqueda al cambiar de página
+    searchResultsMobile.style.display = 'none';
+    searchResults.style.display = 'none';
+
     vistaActiva.style.display = 'block';
 }
 
@@ -72,23 +76,10 @@ function resetActiveNav(activeItem) {
     activeItem.classList.add('active');
 }
 
-navHome.addEventListener('click', () => {
-    resetActiveNav(navHome);
-    cambiarVista(viewHome);
-});
+navHome.addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
+navSearch.addEventListener('click', () => { resetActiveNav(navSearch); cambiarVista(viewSearchMobile); });
+navLibrary.addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
 
-navSearch.addEventListener('click', () => {
-    resetActiveNav(navSearch);
-    cambiarVista(viewSearchMobile);
-});
-
-navLibrary.addEventListener('click', () => {
-    resetActiveNav(navLibrary);
-    renderizarBiblioteca();
-    cambiarVista(viewLibrary);
-});
-
-// Eventos de botones extras para volver al Inicio
 logoHome.addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
 backToHomeBtn.addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
 backToHomeBtn2.addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
@@ -114,10 +105,7 @@ function alternarFavorito(id) {
     renderizarBiblioteca();
 }
 
-playerFavBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    alternarFavorito(canciones[cancionActualIndex].id);
-});
+playerFavBtn.addEventListener('click', (e) => { e.stopPropagation(); alternarFavorito(canciones[cancionActualIndex].id); });
 
 // CARGAR CANCIÓN EN EL REPRODUCTOR
 function cargarCancion(cancion) {
@@ -131,18 +119,14 @@ function playSong() {
     isPlaying = true;
     playBtn.textContent = '⏸';
     audio.play();
-    if (playerModal.style.display === 'flex') {
-        modalPlayBtn.textContent = '⏸ Pausar';
-    }
+    if (playerModal.style.display === 'flex') { modalPlayBtn.textContent = '⏸ Pausar'; }
 }
 
 function pauseSong() {
     isPlaying = false;
     playBtn.textContent = '▶';
     audio.pause();
-    if (playerModal.style.display === 'flex') {
-        modalPlayBtn.textContent = '▶ Reproducir';
-    }
+    if (playerModal.style.display === 'flex') { modalPlayBtn.textContent = '▶ Reproducir'; }
 }
 
 playBtn.addEventListener('click', () => { if (isPlaying) pauseSong(); else playSong(); });
@@ -183,7 +167,7 @@ audio.addEventListener('timeupdate', (e) => {
 progressBar.addEventListener('input', () => { audio.currentTime = (progressBar.value / 100) * audio.duration; });
 audio.addEventListener('ended', siguienteCancion);
 
-// LÓGICA DE BÚSQUEDA INTEGRADA Y CORREGIDA
+// LÓGICA DE BÚSQUEDA FLOTANTE ARREGLADA
 function procesarBusqueda(inputElement, dropdownElement) {
     const textoUsuario = inputElement.value.toLowerCase().trim();
     dropdownElement.innerHTML = '';
@@ -199,14 +183,7 @@ function procesarBusqueda(inputElement, dropdownElement) {
         dropdownElement.style.display = 'block';
         filtered.forEach(cancion => {
             const item = document.createElement('div');
-            
-            // Si procesamos el buscador móvil, le inyectamos explícitamente su clase optimizada
-            if(inputElement.id === 'search-input-mobile') {
-                item.classList.add('mobile-result-item');
-            } else {
-                item.classList.add('search-result-item');
-            }
-            
+            item.classList.add('mobile-result-item');
             item.textContent = cancion.titulo;
 
             item.addEventListener('click', () => {
@@ -222,7 +199,7 @@ function procesarBusqueda(inputElement, dropdownElement) {
     } else {
         dropdownElement.style.display = 'block';
         const noResults = document.createElement('div');
-        noResults.className = (inputElement.id === 'search-input-mobile') ? 'mobile-result-item' : 'search-result-item';
+        noResults.classList.add('mobile-result-item');
         noResults.style.color = '#b3b3b3';
         noResults.textContent = 'No se encontraron canciones';
         dropdownElement.appendChild(noResults);
@@ -265,7 +242,7 @@ document.querySelectorAll('.artist-card').forEach(card => {
     });
 });
 
-// SISTEMA DE RENDERIZADO DE LA BIBLIOTECA (FAVORITOS)
+// SISTEMA DE RENDERIZADO DE LA BIBLIOTECA
 function renderizarBiblioteca() {
     librarySongsList.innerHTML = '';
     favCountEl.textContent = `${favoritos.length} canciones guardadas`;
@@ -355,5 +332,3 @@ audio.addEventListener('timeupdate', () => {
     }
 });
 modalProgressBar.addEventListener('input', () => { audio.currentTime = (modalProgressBar.value / 100) * audio.duration; });
-audio.addEventListener('play', () => { modalPlayBtn.textContent = '⏸ Pausar'; });
-audio.addEventListener('pause', () => { modalPlayBtn.textContent = '▶ Reproducir'; });
