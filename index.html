@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- BARRA SUPERIOR (PC) -->
     <header class="top-bar">
         <div class="logo" id="logo-home" style="cursor: pointer;">🎵 Vibeo</div>
         
@@ -23,6 +24,7 @@
     </header>
 
     <div class="app-layout">
+        <!-- BARRA LATERAL (PC) -->
         <aside class="sidebar">
             <div class="library-card">
                 <div class="library-header" id="sidebar-library-btn" style="cursor: pointer;">
@@ -36,11 +38,14 @@
             </div>
         </aside>
 
+        <!-- CONTENIDO PRINCIPAL DINÁMICO -->
         <main class="main-content">
             
+            <!-- VISTA 1: INICIO -->
             <div id="view-home" class="page-view">
+                <!-- CONTENEDOR DEL LOGO REPARADO CON PARÁMETRO DE ANTICACHÉ -->
                 <div class="home-brand-header">
-                    <img src="assets/imagenes/logo.png" alt="Vibeo Logo" class="home-mini-logo">
+                    <img src="assets/imagenes/logo.png?v=1" alt="Vibeo Logo" class="home-mini-logo">
                 </div>
 
                 <section class="artists-section">
@@ -70,6 +75,7 @@
                 </section>
             </div>
 
+            <!-- VISTA MÓVIL ESPECIAL: BUSCADOR -->
             <div id="view-search-mobile" class="page-view" style="display: none;">
                 <div class="mobile-search-wrapper">
                     <h3>Buscar</h3>
@@ -80,6 +86,7 @@
                 </div>
             </div>
 
+            <!-- VISTA 2: PERFIL DEL ARTISTA -->
             <div id="view-artist" class="page-view" style="display: none;">
                 <button class="btn-back" id="back-to-home-btn">← Volver</button>
                 <div class="artist-profile-header">
@@ -92,6 +99,7 @@
                 </div>
             </div>
 
+            <!-- VISTA 3: BIBLIOTECA / FAVORITOS -->
             <div id="view-library" class="page-view" style="display: none;">
                 <button class="btn-back" id="back-to-home-btn-2">← Volver al Inicio</button>
                 <div class="library-profile-header">
@@ -101,6 +109,7 @@
                 <div class="songs-list-container" id="library-songs-list"></div>
             </div>
 
+            <!-- REPRODUCTOR COMPACTO INFERIOR -->
             <section class="player-section">
                 <div class="player-container">
                     <img id="cover" src="" alt="Portada" class="cover-art">
@@ -133,6 +142,7 @@
         </main>
     </div>
 
+    <!-- MENÚ DE NAVEGACIÓN INFERIOR (MÓVIL) -->
     <nav class="bottom-nav">
         <div class="nav-item active" id="nav-home">
             <span class="nav-icon">🏠</span>
@@ -148,6 +158,7 @@
         </div>
     </nav>
 
+    <!-- MODAL EXPANDIDO MÓVIL -->
     <div id="player-modal" class="modal-overlay">
         <div class="modal-content">
             <button id="close-modal-btn" class="modal-close">✕ Cerrar</button>
