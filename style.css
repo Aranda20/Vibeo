@@ -237,3 +237,24 @@ body {
     .controls .nav-btn { display: none; }
     #play-btn { padding: 0; background: none; color: white; font-size: 1.4rem; width: auto; height: auto; }
 }
+/* --- ESTILOS PARA EL LOGO EN LA VISTA DE INICIO MÓVIL --- */
+.home-brand-header {
+    display: flex;
+    justify-content: flex-start; /* Lo alinea a la izquierda */
+    align-items: center;
+    padding: 12px 8px 4px 8px;   /* Márgenes suaves para que respire */
+}
+
+.home-mini-logo {
+    height: 32px;               /* Tamaño discreto y perfectamente balanceado */
+    width: auto;                /* Mantiene la proporción original de tu imagen */
+    object-fit: contain;
+    opacity: 0.95;              /* Se integra de forma suave con el fondo oscuro */
+}
+
+/* En la versión de escritorio de PC no lo necesitamos porque ya tienes el logo en la barra superior */
+@media (min-width: 769px) {
+    .home-brand-header {
+        display: none !important;
+    }
+}
