@@ -237,30 +237,3 @@ body {
     .controls .nav-btn { display: none; }
     #play-btn { padding: 0; background: none; color: white; font-size: 1.4rem; width: auto; height: auto; }
 }
-/* --- AJUSTE MAESTRO PARA EL LOGO EN INICIO MÓVIL --- */
-.home-brand-header {
-    display: flex;
-    justify-content: flex-start; /* Alineado a la izquierda */
-    align-items: center;
-    padding: 24px 16px 12px 16px; /* Más espacio arriba y a los lados para que no esté pegado */
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.home-mini-logo {
-    height: 48px;                  /* Incrementamos el tamaño para que sea muy legible */
-    width: auto;                  /* Mantiene la proporción perfecta sin deformar el logo */
-    object-fit: contain;
-    
-    /* MAGIA VISUAL: Volvemos blanco el texto oscuro del logo para que resalte en el fondo negro */
-    filter: brightness(0) invert(1); 
-    
-    opacity: 0.95;                /* Integración limpia con la interfaz */
-}
-
-/* Evitamos que este encabezado afecte la visualización en computadoras */
-@media (min-width: 769px) {
-    .home-brand-header {
-        display: none !important;
-    }
-}
