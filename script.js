@@ -2,7 +2,6 @@ let playlistActual = [];
 let indiceActual = 0;
 let favoritos = JSON.parse(localStorage.getItem('vibeo_favs')) || [];
 
-// Elemento de audio nativo optimizado
 const audioElement = new Audio();
 audioElement.crossOrigin = "anonymous";
 
@@ -59,8 +58,9 @@ document.getElementById('back-from-search-btn').addEventListener('click', () => 
 document.getElementById('view-favorites-btn').addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
 document.getElementById('sidebar-library-btn').addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
 
+// CONEXIÓN A PROVEEDOR DE STREAMING DE CANCIÓN COMPLETA
 function cargarYReproducir(cancion) {
-    if (!cancion || !cancion.audioUrl) return;
+    if (!cancion) return;
 
     trackTitle.textContent = `${cancion.titulo} - ${cancion.artista}`;
     cover.src = cancion.portadaUrl;
@@ -71,13 +71,33 @@ function cargarYReproducir(cancion) {
     document.querySelector('.player-container').style.display = 'flex';
     actualizarCorazonEstado();
 
-    audioElement.src = cancion.audioUrl;
-    audioElement.play().then(() => {
-        playBtn.textContent = '⏸';
-        if (modalPlayBtn) modalPlayBtn.textContent = '⏸';
-    }).catch(e => {
-        console.log("Error al reproducir audio:", e);
-    });
+    const query = `${cancion.titulo} ${cancion.artista}`;
+    
+    // Petición al motor de transmisión de audio completo
+    fetch(`https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(query)}&filter=music_songs`)
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.items && data.items.length > 0) {
+                const videoId = data.items[0].url.split("v=")[1];
+                return fetch(`https://pipedapi.kavin.rocks/streams/${videoId}`);
+            } else {
+                throw new Error("No encontrado");
+            }
+        })
+        .then(res => res.json())
+        .then(streamData => {
+            if (streamData && streamData.audioStreams && streamData.audioStreams.length > 0) {
+                // Tomar la transmisión directa de audio mp4/m4a de alta calidad
+                const bestAudio = streamData.audioStreams.find(s => s.mimeType.includes("audio/mp4")) || streamData.audioStreams[0];
+                audioElement.src = bestAudio.url;
+                audioElement.play();
+                playBtn.textContent = '⏸';
+                if (modalPlayBtn) modalPlayBtn.textContent = '⏸';
+            }
+        })
+        .catch(err => {
+            console.log("Error al conectar con servidor completo", err);
+        });
 }
 
 function alternarReproduccion() {
@@ -163,7 +183,6 @@ function ejecutarBusqueda(query) {
                     id: item.trackId,
                     titulo: item.trackName,
                     artista: item.artistName,
-                    audioUrl: item.previewUrl, // Enlace directo de streaming multimedia
                     portadaUrl: item.artworkUrl100.replace('100x100bb.jpg', '500x500bb.jpg')
                 }));
 
@@ -229,7 +248,6 @@ document.querySelectorAll('.artist-card').forEach(card => {
                         id: item.trackId,
                         titulo: item.trackName,
                         artista: item.artistName,
-                        audioUrl: item.previewUrl,
                         portadaUrl: item.artworkUrl100.replace('100x100bb.jpg', '500x500bb.jpg')
                     }));
 
