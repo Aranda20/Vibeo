@@ -60,27 +60,8 @@ body {
 .track-info { display: flex; justify-content: space-between; align-items: center; }
 .track-info h3 { margin: 0; font-size: 1rem; }
 #open-modal-btn { background: none; border: 1px solid #555; color: var(--text-muted); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
-.progress-container { display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-size: 0.85rem; }
-.progress-container input[type="range"] { flex: 1; accent-color: var(--spotify-green); cursor: pointer; }
 .controls { display: flex; align-items: center; gap: 16px; }
-.controls button { background: none; border: none; color: var(--text-white); font-size: 1.2rem; cursor: pointer; }
-#play-btn { background-color: var(--text-white); color: var(--bg-black); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-
-/* Modal Expandido */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000000; display: none; justify-content: center; align-items: center; z-index: 2000; }
-.modal-content { width: 100%; max-width: 400px; padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
-.modal-close { position: absolute; top: 10px; left: 20px; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
-.modal-cover-box { width: 280px; height: 280px; border-radius: 12px; overflow: hidden; margin: 20px 0; }
-.modal-cover-art { width: 100%; height: 100%; object-fit: cover; }
-.modal-track-info-row { display: flex; width: 100%; justify-content: space-between; align-items: center; margin-top: 10px; }
-.modal-track-info { text-align: left; }
-.modal-track-info h2 { margin: 0; font-size: 1.2rem; }
-.modal-track-info p { margin: 4px 0 0 0; color: var(--text-muted); }
-.modal-progress-container { display: flex; align-items: center; width: 100%; gap: 12px; margin-top: 20px; color: var(--text-muted); font-size: 0.85rem; }
-.modal-progress-container input[type="range"] { flex: 1; accent-color: #fff; cursor: pointer; }
-.modal-controls { display: flex; align-items: center; justify-content: center; gap: 32px; margin-top: 24px; width: 100%; }
-.modal-nav-btn { background: none; border: none; color: var(--text-white); font-size: 1.8rem; cursor: pointer; }
-#modal-play-btn { background-color: var(--text-white); color: var(--bg-black); border-radius: 50%; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+#play-btn { background-color: var(--text-white); color: var(--bg-black); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
 
 .bottom-nav { display: none; }
 .btn-back { background-color: #242424; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
@@ -139,8 +120,7 @@ body {
     .player-container { display: none; position: fixed; bottom: 70px; left: 8px; right: 8px; width: calc(100% - 16px); background-color: #282828; border-radius: 8px; padding: 8px 12px; flex-direction: row; align-items: center; justify-content: space-between; z-index: 99; margin-top: 0; max-width: none; box-sizing: border-box; }
     .cover-art { width: 44px; height: 44px; }
     .track-info h3 { font-size: 0.85rem; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .progress-container span { display: none; }
-    .controls .nav-btn { display: none; }
+    #open-modal-btn { padding: 2px 6px; font-size: 0.75rem; }
     #play-btn { background: none; color: white; width: auto; height: auto; }
 }
 
