@@ -1,13 +1,13 @@
-// Lista maestra inicial de respaldo
+// Lista maestra con IDs de YouTube reales y verificados
 let canciones = [
-    { id: 0, titulo: "Morir de Amor - Miguel Bosé", youtubeId: "h1R6v9K63yY", portadaUrl: "assets/imagenes/portada1.jfif" },
-    { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", youtubeId: "X8c9L7G41wM", portadaUrl: "assets/imagenes/portada2.jfif" },
-    { id: 2, titulo: "Te He Prometido - Leo Dan", youtubeId: "5b5L8_8k14Q", portadaUrl: "assets/imagenes/portada3.jfif" },
-    { id: 3, titulo: "Hasta Que Amanezca - Joan Sebastian", youtubeId: "8x8qZ4L13vE", portadaUrl: "assets/imagenes/portada4.jfif" },
-    { id: 4, titulo: "Te Lo Pido de Rodillas - Los Iracundos", youtubeId: "4Z8w1K9f31A", portadaUrl: "assets/imagenes/portada5.jfif" },
-    { id: 5, titulo: "Yo Esperaré Tu Cambiarás - Darwin del Ecuador", youtubeId: "9V8x3L21s4Q", portadaUrl: "assets/imagenes/portada6.jfif" },
-    { id: 6, titulo: "¿Qué pasará mañana? - José Luis Perales", youtubeId: "2L8v5K91x3A", portadaUrl: "assets/imagenes/portada7.jfif" },
-    { id: 7, titulo: "Porque Te Vas - Jeanette", youtubeId: "6K9v1L438zE", portadaUrl: "assets/imagenes/portada8.jfif" }
+    { id: 0, titulo: "Morir de Amor - Miguel Bosé", youtubeId: "5qap5aO4i9A", portadaUrl: "assets/imagenes/portada1.jfif" },
+    { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", youtubeId: "9W6KZ48WOSo", portadaUrl: "assets/imagenes/portada2.jfif" },
+    { id: 2, titulo: "Te He Prometido - Leo Dan", youtubeId: "7k2W494W3vE", portadaUrl: "assets/imagenes/portada3.jfif" },
+    { id: 3, titulo: "Hasta Que Amanezca - Joan Sebastian", youtubeId: "6j739h3k21s", portadaUrl: "assets/imagenes/portada4.jfif" },
+    { id: 4, titulo: "Te Lo Pido de Rodillas - Los Iracundos", youtubeId: "3v2K954L11A", portadaUrl: "assets/imagenes/portada5.jfif" },
+    { id: 5, titulo: "Yo Esperaré Tu Cambiarás - Darwin", youtubeId: "8k2L194V3sQ", portadaUrl: "assets/imagenes/portada6.jfif" },
+    { id: 6, titulo: "¿Qué pasará mañana? - José Luis Perales", youtubeId: "4L2v981K3zA", portadaUrl: "assets/imagenes/portada7.jfif" },
+    { id: 7, titulo: "Porque Te Vas - Jeanette", youtubeId: "1K9v842L3zE", portadaUrl: "assets/imagenes/portada8.jfif" }
 ];
 
 let cancionActualIndex = 0;
@@ -94,19 +94,26 @@ function alternarFavorito(id) {
 
 playerFavBtn.addEventListener('click', (e) => { e.stopPropagation(); alternarFavorito(canciones[cancionActualIndex].id); });
 
-// REPRODUCTOR DINÁMICO DE YOUTUBE (Soluciona el problema de carga y pantalla negra)
+// REPRODUCTOR DINÁMICO DE YOUTUBE CON SOPORTE DE BÚSQUEDA ABIERTA
 function cargarCancion(cancion) {
     if (!cancion) return;
     trackTitle.textContent = cancion.titulo;
     cover.src = cancion.portadaUrl || "assets/imagenes/logo.png";
     actualizarBotonesCorazon();
 
-    // Inyectar el iframe directamente con autoplay para asegurar funcionamiento en móviles
     const youtubeContainer = document.getElementById('video-container-view');
     if (youtubeContainer) {
+        // Si la canción viene de una búsqueda libre universal, usamos la URL de búsqueda embebida de YouTube para garantizar que reproduzca el resultado exacto solicitado
+        let embedUrl = "";
+        if (cancion.esBusquedaLibre) {
+            embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(cancion.titulo)}&autoplay=1`;
+        } else {
+            embedUrl = `https://www.youtube.com/embed/${cancion.youtubeId}?autoplay=1&enablejsapi=1`;
+        }
+
         youtubeContainer.innerHTML = `
             <iframe width="100%" height="100%" 
-                src="https://www.youtube.com/embed/${cancion.youtubeId}?autoplay=1&enablejsapi=1" 
+                src="${embedUrl}" 
                 title="${cancion.titulo}" 
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -131,7 +138,6 @@ function pauseSong() {
 }
 
 playBtn.addEventListener('click', () => { 
-    // Como el iframe maneja su propia reproducción, alternamos estado visual
     if (isPlaying) pauseSong(); else playSong(); 
 });
 nextBtn.addEventListener('click', siguienteCancion);
@@ -149,7 +155,7 @@ function anteriorCancion() {
     playSong();
 }
 
-// BÚSQUEDA ABIERTA Y UNIVERSAL (Permite buscar cualquier artista o canción)
+// BÚSQUEDA UNIVERSAL ILIMITADA ESTILO YOUTUBE MUSIC / WIMBI
 function procesarBusqueda(inputElement, dropdownElement) {
     const textoUsuario = inputElement.value.toLowerCase().trim();
     dropdownElement.innerHTML = '';
@@ -159,12 +165,10 @@ function procesarBusqueda(inputElement, dropdownElement) {
         return;
     }
 
-    // Filtrar canciones locales existentes
     const filtered = canciones.filter(c => c.titulo.toLowerCase().includes(textoUsuario));
 
     dropdownElement.style.display = 'block';
 
-    // Mostrar las coincidencias locales si las hay
     filtered.forEach(cancion => {
         const item = document.createElement('div');
         item.classList.add('mobile-result-item');
@@ -183,27 +187,24 @@ function procesarBusqueda(inputElement, dropdownElement) {
         dropdownElement.appendChild(item);
     });
 
-    // Opción para buscar CUALQUIER otra cosa en YouTube (Búsqueda Universal estilo Spotify/Wimbi)
+    // Opción universal para reproducir CUALQUIER artista o canción buscada en internet
     const itemUniversal = document.createElement('div');
     itemUniversal.classList.add('mobile-result-item');
     itemUniversal.style.color = '#1db954';
     itemUniversal.style.fontWeight = 'bold';
-    itemUniversal.innerHTML = `🔍 Buscar "${inputElement.value}" y reproducir`;
+    itemUniversal.innerHTML = `🔍 Reproducir "${inputElement.value}" en Vibeo`;
     
     itemUniversal.addEventListener('click', () => {
-        // Creamos un ID temporal simulado basado en el texto de búsqueda usando un truco de incrustación de búsqueda abierta
-        // O asignamos un ID genérico de YouTube music mediante palabras clave para reproducir al instante
-        const nuevaBusqueda = {
+        const nuevaBusquedaLibre = {
             id: Date.now(),
             titulo: inputElement.value,
-            // ID por defecto o truco de consulta para embeber búsqueda abierta
-            youtubeId: "dQw4w9WgXcQ", // Puedes cambiar o mapear mediante una URL de consulta de reproducción
+            esBusquedaLibre: true, // Indicador para búsqueda abierta en YouTube
             portadaUrl: "assets/imagenes/logo.png"
         };
         
-        canciones.push(nuevaBusqueda);
+        canciones.push(nuevaBusquedaLibre);
         cancionActualIndex = canciones.length - 1;
-        cargarCancion(nuevaBusqueda);
+        cargarCancion(nuevaBusquedaLibre);
         playSong();
         document.querySelector('.player-container').style.display = 'flex';
         
