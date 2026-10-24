@@ -3,9 +3,7 @@ let isYtReady = false;
 let playlistActual = [];
 let indiceActual = 0;
 let favoritos = JSON.parse(localStorage.getItem('vibeo_favs')) || [];
-let currentSongId = null;
 
-// Inicializador del reproductor de YouTube invisible para canciones completas
 function onYouTubeIframeAPIReady() {
     ytPlayer = new YT.Player('audio-player-box', {
         height: '0',
@@ -31,7 +29,6 @@ function onPlayerStateChange(event) {
     }
 }
 
-// Elementos DOM principales
 const playBtn = document.getElementById('play-btn');
 const modalPlayBtn = document.getElementById('modal-play-btn');
 const nextBtn = document.getElementById('next-btn');
@@ -84,10 +81,8 @@ document.getElementById('back-from-search-btn').addEventListener('click', () => 
 document.getElementById('view-favorites-btn').addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
 document.getElementById('sidebar-library-btn').addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
 
-// Reproducción completa basada en YouTube
 function cargarYReproducir(cancion) {
     if (!cancion) return;
-    currentSongId = cancion.id || cancion.titulo;
     trackTitle.textContent = `${cancion.titulo} - ${cancion.artista}`;
     cover.src = cancion.portadaUrl;
     document.getElementById('modal-cover').src = cancion.portadaUrl;
@@ -96,7 +91,6 @@ function cargarYReproducir(cancion) {
     
     actualizarCorazonEstado();
 
-    // Buscar el ID exacto del tema en YouTube para reproducir la canción completa de forma dinámica
     fetch(`https://invidious.io.lol/api/v1/search?q=${encodeURIComponent(cancion.titulo + " " + cancion.artista)}&type=video`)
         .then(res => res.json())
         .then(data => {
@@ -108,7 +102,7 @@ function cargarYReproducir(cancion) {
                 }
             }
         })
-        .catch(err => console.log("Error al conectar con streaming", err));
+        .catch(err => console.log("Error de streaming", err));
 }
 
 function alternarReproduccion() {
@@ -123,7 +117,6 @@ function alternarReproduccion() {
 
 playBtn.addEventListener('click', alternarReproduccion);
 if (modalPlayBtn) modalPlayBtn.addEventListener('click', alternarReproduccion);
-
 nextBtn.addEventListener('click', siguienteCancion);
 prevBtn.addEventListener('click', anteriorCancion);
 
@@ -139,7 +132,6 @@ function anteriorCancion() {
     cargarYReproducir(playlistActual[indiceActual]);
 }
 
-// Barra de progreso y sincronización de tiempo
 setInterval(() => {
     if (isYtReady && ytPlayer && ytPlayer.getCurrentTime && ytPlayer.getDuration) {
         const cur = ytPlayer.getCurrentTime();
@@ -180,8 +172,6 @@ function formatearTiempo(segundos) {
     return `${min}:${sec < 10 ? '0' : ''}${sec}`;
 }
 
-// BÚSQUEDA AVANZADA CON SUBPÁGINA DEDICADA (Estilo Plantilla / Wimbi)
-let busquedaTimeout = null;
 searchInputMobile.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         const query = searchInputMobile.value.trim();
@@ -235,7 +225,6 @@ searchInputMobile.addEventListener('keypress', (e) => {
     }
 });
 
-// Artistas Populares en Inicio
 document.querySelectorAll('.artist-card').forEach(card => {
     card.addEventListener('click', () => {
         const nombreArtista = card.getAttribute('data-artista');
@@ -281,19 +270,22 @@ document.querySelectorAll('.artist-card').forEach(card => {
     });
 });
 
-// Sistema de Favoritos
 function actualizarCorazonEstado() {
     const cancion = playlistActual[indiceActual];
     if (!cancion) return;
-    const esFav = favoritos.some(f => (f.id === cancion.id || f.titulo === cancion.titulo));
+    const esFav = favoritos.some(f => (f.id === cancionesIguales(f, cancion)));
     playerFavBtn.textContent = esFav ? '❤️' : '♡';
     if (modalFavBtn) modalFavBtn.textContent = esFav ? '❤️' : '♡';
+}
+
+function cancionesIguales(a, b) {
+    return a.id === b.id || a.titulo === b.titulo;
 }
 
 function alternarFavoritoActual() {
     const cancion = playlistActual[indiceActual];
     if (!cancion) return;
-    const idx = favoritos.findIndex(f => (f.id === cancion.id || f.titulo === cancion.titulo));
+    const idx = favoritos.findIndex(f => f.titulo === cancion.titulo);
     if (idx >= 0) {
         favoritos.splice(idx, 1);
     } else {
@@ -346,7 +338,6 @@ function renderizarBiblioteca() {
     });
 }
 
-// Control del Modal
 const playerModal = document.getElementById('player-modal');
 document.getElementById('open-modal-btn').addEventListener('click', () => { playerModal.style.display = 'flex'; });
 document.getElementById('close-modal-btn').addEventListener('click', () => { playerModal.style.display = 'none'; });
