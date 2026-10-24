@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibeo - Reproductor Web</title>
+    <title>Vibeo - Reproductor Musical</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -74,13 +74,16 @@
                 </section>
             </div>
 
-            <!-- VISTA MÓVIL: BUSCADOR -->
+            <!-- VISTA MÓVIL: BUSCADOR GLOBAL -->
             <div id="view-search-mobile" class="page-view" style="display: none;">
                 <div class="mobile-search-wrapper">
                     <h3>Buscar</h3>
                     <div class="mobile-search-box">
                         <input type="text" id="search-input-mobile" placeholder="Busca cualquier canción o artista..." autocomplete="off">
-                        <div id="search-results-mobile" class="search-results-dropdown-mobile"></div>
+                    </div>
+                    <!-- Resultados organizados estilo Wimbi/Spotify -->
+                    <div id="search-results-mobile" class="search-results-container-mobile">
+                        <p class="search-placeholder-text">¿Qué te apetece escuchar hoy?</p>
                     </div>
                 </div>
             </div>
@@ -108,15 +111,15 @@
                 <div class="songs-list-container" id="library-songs-list"></div>
             </div>
 
-            <!-- REPRODUCTOR COMPACTO INFERIOR -->
+            <!-- REPRODUCTOR FLOTANTE INFERIOR -->
             <section class="player-section">
                 <div class="player-container">
-                    <img id="cover" src="" alt="Portada" class="cover-art">
+                    <img id="cover" src="assets/imagenes/logo.png" alt="Portada" class="cover-art">
                     
                     <div class="player-main-controls">
                         <div class="track-info">
                             <div class="title-fav-group">
-                                <h3 id="track-title"></h3>
+                                <h3 id="track-title">Selecciona una canción</h3>
                                 <button id="player-fav-btn" class="heart-btn">♡</button>
                             </div>
                             <button id="open-modal-btn">⛶ Ampliar</button>
@@ -127,6 +130,9 @@
                             <input type="range" id="progress-bar" min="0" max="100" value="0">
                             <span id="duration">0:00</span>
                         </div>
+                        
+                        <!-- Elemento de audio nativo HTML5 hiper-eficiente -->
+                        <audio id="audio-element"></audio>
                     </div>
 
                     <div class="controls">
@@ -155,22 +161,13 @@
         </div>
     </nav>
 
-    <!-- MODAL EXPANDIDO MÓVIL -->
+    <!-- MODAL EXPANDIDO (ESTILO SPOTIFY / WIMBI) -->
     <div id="player-modal" class="modal-overlay">
         <div class="modal-content">
             <button id="close-modal-btn" class="modal-close">✕</button>
             
-            <div class="modal-tabs">
-                <button class="tab-btn active" id="tab-video-btn">Vídeo</button>
-                <button class="tab-btn" id="tab-cover-btn">Portada</button>
-            </div>
-
-            <div id="video-container-view" class="media-display-box">
-                <!-- El vídeo de YouTube se cargará dinámicamente aquí al dar play -->
-            </div>
-
-            <div id="cover-container-view" class="media-display-box" style="display: none;">
-                <img id="modal-cover" src="" alt="Portada Expandida" class="modal-cover-art">
+            <div class="modal-cover-box">
+                <img id="modal-cover" src="assets/imagenes/logo.png" alt="Portada Expandida" class="modal-cover-art">
             </div>
             
             <div class="modal-track-info-row">
