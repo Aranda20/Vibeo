@@ -1,5 +1,59 @@
-// Elementos del DOM del Reproductor General
-const audio = document.getElementById('audio');
+let player;
+let isYoutubeReady = false;
+
+// Callback automático requerido por la API de YouTube
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('youtube-player', {
+        height: '100%',
+        width: '100%',
+        playerVars: {
+            'playsinline': 1,
+            'controls': 1,
+            'rel': 0
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+function onPlayerReady(event) {
+    isYoutubeReady = true;
+}
+
+function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.PLAYING) {
+        isPlaying = true;
+        playBtn.textContent = '⏸';
+        if (modalPlayBtn) modalPlayBtn.textContent = '⏸';
+    } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+        isPlaying = false;
+        playBtn.textContent = '▶';
+        if (modalPlayBtn) modalPlayBtn.textContent = '▶';
+        if (event.data == YT.PlayerState.ENDED) {
+            siguienteCancion();
+        }
+    }
+}
+
+// Lista maestra actualizada con el ID de YouTube de cada canción
+const canciones = [
+    { id: 0, titulo: "Morir de Amor - Miguel Bosé", youtubeId: "h1R6v9K63yY", portadaUrl: "assets/imagenes/portada1.jfif" },
+    { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", youtubeId: "X8c9L7G41wM", portadaUrl: "assets/imagenes/portada2.jfif" },
+    { id: 2, titulo: "Te He Prometido - Leo Dan", youtubeId: "5b5L8_8k14Q", portadaUrl: "assets/imagenes/portada3.jfif" },
+    { id: 3, titulo: "Hasta Que Amanezca - Joan Sebastian", youtubeId: "8x8qZ4L13vE", portadaUrl: "assets/imagenes/portada4.jfif" },
+    { id: 4, titulo: "Te Lo Pido de Rodillas - Los Iracundos", youtubeId: "4Z8w1K9f31A", portadaUrl: "assets/imagenes/portada5.jfif" },
+    { id: 5, titulo: "Yo Esperaré Tu Cambiarás - Darwin del Ecuador", youtubeId: "9V8x3L21s4Q", portadaUrl: "assets/imagenes/portada6.jfif" },
+    { id: 6, titulo: "¿Qué pasará mañana? - José Luis Perales", youtubeId: "2L8v5K91x3A", portadaUrl: "assets/imagenes/portada7.jfif" },
+    { id: 7, titulo: "Porque Te Vas - Jeanette", youtubeId: "6K9v1L438zE", portadaUrl: "assets/imagenes/portada8.jfif" }
+];
+
+let cancionActualIndex = 0;
+let isPlaying = false;
+let favoritos = JSON.parse(localStorage.getItem('vibeo_favs')) || [];
+
+// Elementos DOM
 const playBtn = document.getElementById('play-btn');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
@@ -10,13 +64,11 @@ const currentTimeEl = document.getElementById('current-time');
 const durationEl = document.getElementById('duration');
 const playerFavBtn = document.getElementById('player-fav-btn');
 
-// Elementos del DOM de Buscadores (PC y Móvil)
 const searchInput = document.getElementById('search-input');
 const searchResults = document.getElementById('search-results');
 const searchInputMobile = document.getElementById('search-input-mobile');
 const searchResultsMobile = document.getElementById('search-results-mobile');
 
-// Elementos de Navegación de Vistas
 const viewHome = document.getElementById('view-home');
 const viewSearchMobile = document.getElementById('view-search-mobile');
 const viewArtist = document.getElementById('view-artist');
@@ -27,50 +79,26 @@ const backToHomeBtn2 = document.getElementById('back-to-home-btn-2');
 const viewFavoritesBtn = document.getElementById('view-favorites-btn');
 const sidebarLibraryBtn = document.getElementById('sidebar-library-btn');
 
-// Elementos de la Barra Inferior Móvil
 const navHome = document.getElementById('nav-home');
 const navSearch = document.getElementById('nav-search');
 const navLibrary = document.getElementById('nav-library');
 const navItems = document.querySelectorAll('.nav-item');
 
-// Elementos de la vista del Artista
 const artistProfileName = document.getElementById('artist-profile-name');
 const artistSongsList = document.getElementById('artist-songs-list');
-
-// Elementos de la biblioteca
 const librarySongsList = document.getElementById('library-songs-list');
 const favCountEl = document.getElementById('fav-count');
 
-// Lista maestra de canciones (IDs normalizados y limpios)
-const canciones = [
-    { id: 0, titulo: "Morir de Amor - Miguel Bosé", audioUrl: "assets/canciones/cancion1.mp3", portadaUrl: "assets/imagenes/portada1.jfif" },
-    { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", audioUrl: "assets/canciones/cancion2.mp3", portadaUrl: "assets/imagenes/portada2.jfif" },
-    { id: 2, titulo: "Te He Prometido - Leo Dan", audioUrl: "assets/canciones/cancion3.mp3", portadaUrl: "assets/imagenes/portada3.jfif" },
-    { id: 3, titulo: "Hasta Que Amanezca - Joan Sebastian", audioUrl: "assets/canciones/cancion4.mp3", portadaUrl: "assets/imagenes/portada4.jfif" },
-    { id: 4, titulo: "Te Lo Pido de Rodillas - Los Iracundos", audioUrl: "assets/canciones/cancion5.mp3", portadaUrl: "assets/imagenes/portada5.jfif" },
-    { id: 5, titulo: "Yo Esperaré Tu Cambiarás - Darwin del Ecuador", audioUrl: "assets/canciones/cancion6.mp3", portadaUrl: "assets/imagenes/portada6.jfif" },
-    { id: 6, titulo: "¿Qué pasará mañana? - José Luis Perales", audioUrl: "assets/canciones/cancion7.mp3", portadaUrl: "assets/imagenes/portada7.jfif" },
-    { id: 7, titulo: "Porque Te Vas - Jeanette", audioUrl: "assets/canciones/cancion8.mp3", portadaUrl: "assets/imagenes/portada8.jfif" }
-];
-
-let cancionActualIndex = 0;
-let isPlaying = false;
-let favoritos = JSON.parse(localStorage.getItem('vibeo_favs')) || [];
-
-// FUNCIÓN PARA CAMBIAR ENTRE PÁGINAS / VISTAS
 function cambiarVista(vistaActiva) {
     viewHome.style.display = 'none';
     viewSearchMobile.style.display = 'none';
     viewArtist.style.display = 'none';
     viewLibrary.style.display = 'none';
-    
     searchResultsMobile.style.display = 'none';
     searchResults.style.display = 'none';
-
     vistaActiva.style.display = 'block';
 }
 
-// CONTROL DE CLICS EN LA BARRA DE NAVEGACIÓN INFERIOR (MÓVIL)
 function resetActiveNav(activeItem) {
     navItems.forEach(item => item.classList.remove('active'));
     activeItem.classList.add('active');
@@ -86,13 +114,13 @@ backToHomeBtn2.addEventListener('click', () => { resetActiveNav(navHome); cambia
 viewFavoritesBtn.addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
 sidebarLibraryBtn.addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
 
-// GESTIÓN DE FAVORITOS
 function actualizarBotonesCorazon() {
     const cancionActual = canciones[cancionActualIndex];
     if(!cancionActual) return;
     const esFavorito = favoritos.includes(cancionActual.id);
     playerFavBtn.textContent = esFavorito ? '❤️' : '♡';
-    document.getElementById('modal-fav-btn').textContent = esFavorito ? '❤️' : '♡';
+    const modalFavBtn = document.getElementById('modal-fav-btn');
+    if(modalFavBtn) modalFavBtn.textContent = esFavorito ? '❤️' : '♡';
 }
 
 function alternarFavorito(id) {
@@ -108,27 +136,35 @@ function alternarFavorito(id) {
 
 playerFavBtn.addEventListener('click', (e) => { e.stopPropagation(); alternarFavorito(canciones[cancionActualIndex].id); });
 
-// CARGAR CANCIÓN EN EL REPRODUCTOR
 function cargarCancion(cancion) {
     if (!cancion) return;
     trackTitle.textContent = cancion.titulo;
-    audio.src = cancion.audioUrl;
     cover.src = cancion.portadaUrl;
     actualizarBotonesCorazon();
+
+    if (isYoutubeReady && player && player.loadVideoById) {
+        player.loadVideoById(cancion.youtubeId);
+    }
 }
 
 function playSong() {
     isPlaying = true;
     playBtn.textContent = '⏸';
-    audio.play().catch(error => console.log("Error al reproducir audio:", error));
-    if (playerModal.style.display === 'flex') { modalPlayBtn.textContent = '⏸ Pausar'; }
+    if (isYoutubeReady && player && player.playVideo) {
+        player.playVideo();
+    }
+    const modalPlayBtn = document.getElementById('modal-play-btn');
+    if (modalPlayBtn) modalPlayBtn.textContent = '⏸';
 }
 
 function pauseSong() {
     isPlaying = false;
     playBtn.textContent = '▶';
-    audio.pause();
-    if (playerModal.style.display === 'flex') { modalPlayBtn.textContent = '▶ Reproducir'; }
+    if (isYoutubeReady && player && player.pauseVideo) {
+        player.pauseVideo();
+    }
+    const modalPlayBtn = document.getElementById('modal-play-btn');
+    if (modalPlayBtn) modalPlayBtn.textContent = '▶';
 }
 
 playBtn.addEventListener('click', () => { if (isPlaying) pauseSong(); else playSong(); });
@@ -147,29 +183,40 @@ function anteriorCancion() {
     playSong();
 }
 
-// Progreso de tiempo
-audio.addEventListener('timeupdate', (e) => {
-    const { duration, currentTime } = e.srcElement;
-    if (duration) {
-        const porcentajeProgreso = (currentTime / duration) * 100;
-        progressBar.value = porcentajeProgreso;
+// Actualizador de barra de progreso basado en YouTube API
+setInterval(() => {
+    if (isPlaying && isYoutubeReady && player && player.getCurrentTime && player.getDuration) {
+        const currentTime = player.getCurrentTime();
+        const duration = player.getDuration();
+        if (duration) {
+            progressBar.value = (currentTime / duration) * 100;
+            const modalProg = document.getElementById('modal-progress-bar');
+            if(modalProg) modalProg.value = progressBar.value;
 
-        let currentMinutes = Math.floor(currentTime / 60);
-        let currentSeconds = Math.floor(currentTime % 60);
-        if (currentSeconds < 10) currentSeconds = `0${currentSeconds}`;
-        currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
+            let curMin = Math.floor(currentTime / 60);
+            let curSec = Math.floor(currentTime % 60);
+            if (curSec < 10) curSec = `0${curSec}`;
+            currentTimeEl.textContent = `${curMin}:${curSec}`;
+            const modCur = document.getElementById('modal-current-time');
+            if(modCur) modCur.textContent = currentTimeEl.textContent;
 
-        let durationMinutes = Math.floor(duration / 60);
-        let durationSeconds = Math.floor(duration % 60);
-        if (durationSeconds < 10) durationSeconds = `0${durationSeconds}`;
-        durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+            let durMin = Math.floor(duration / 60);
+            let durSec = Math.floor(duration % 60);
+            if (durSec < 10) durSec = `0${durSec}`;
+            durationEl.textContent = `${durMin}:${durSec}`;
+            const modDur = document.getElementById('modal-duration');
+            if(modDur) modDur.textContent = durationEl.textContent;
+        }
+    }
+}, 500);
+
+progressBar.addEventListener('input', () => {
+    if (isYoutubeReady && player && player.getDuration) {
+        const targetTime = (progressBar.value / 100) * player.getDuration();
+        player.seekTo(targetTime, true);
     }
 });
 
-progressBar.addEventListener('input', () => { audio.currentTime = (progressBar.value / 100) * audio.duration; });
-audio.addEventListener('ended', siguienteCancion);
-
-// LÓGICA DE BÚSQUEDA FLOTANTE REPARADA CON INDEX TRACING
 function procesarBusqueda(inputElement, dropdownElement) {
     const textoUsuario = inputElement.value.toLowerCase().trim();
     dropdownElement.innerHTML = '';
@@ -188,15 +235,12 @@ function procesarBusqueda(inputElement, dropdownElement) {
             item.classList.add('mobile-result-item');
             item.textContent = cancion.titulo;
 
-            // Al hacer clic, buscamos la posición real de la canción dentro del array maestro
             item.addEventListener('click', () => {
                 const targetIndex = canciones.findIndex(c => c.id === cancion.id);
                 if (targetIndex !== -1) {
                     cancionActualIndex = targetIndex;
                     cargarCancion(canciones[cancionActualIndex]);
                     playSong();
-                    
-                    // Mostrar contenedor del reproductor
                     const containerReproductor = document.querySelector('.player-container');
                     if(containerReproductor) containerReproductor.style.display = 'flex';
                 }
@@ -218,12 +262,11 @@ function procesarBusqueda(inputElement, dropdownElement) {
 searchInput.addEventListener('input', () => procesarBusqueda(searchInput, searchResults));
 searchInputMobile.addEventListener('input', () => procesarBusqueda(searchInputMobile, searchResultsMobile));
 
-// NAVEGACIÓN A SECCIÓN DE ARTISTAS
+// NAVEGACIÓN ARTISTAS
 document.querySelectorAll('.artist-card').forEach(card => {
     card.addEventListener('click', () => {
         const nombreArtista = card.getAttribute('data-artista');
         artistProfileName.textContent = nombreArtista;
-        
         const cancionesDelArtista = canciones.filter(c => c.titulo.toLowerCase().includes(nombreArtista.toLowerCase()));
         artistSongsList.innerHTML = '';
         
@@ -254,7 +297,6 @@ document.querySelectorAll('.artist-card').forEach(card => {
     });
 });
 
-// SISTEMA DE RENDERIZADO DE LA BIBLIOTECA
 function renderizarBiblioteca() {
     librarySongsList.innerHTML = '';
     favCountEl.textContent = `${favoritos.length} canciones guardadas`;
@@ -298,20 +340,34 @@ function renderizarBiblioteca() {
     });
 }
 
-// MODAL EXPANDIDO MÓVIL
+// MODAL Y GESTIÓN DE PESTAÑAS (VÍDEO / PORTADA)
 const playerModal = document.getElementById('player-modal');
 const openModalBtn = document.getElementById('open-modal-btn');
 const closeModalBtn = document.getElementById('close-modal-btn');
 const modalCover = document.getElementById('modal-cover');
 const modalTrackTitle = document.getElementById('modal-track-title');
 const modalTrackArtist = document.getElementById('modal-track-artist');
-const modalProgressBar = document.getElementById('modal-progress-bar');
-const modalCurrentTimeEl = document.getElementById('modal-current-time');
-const modalDurationEl = document.getElementById('modal-duration');
 const modalPlayBtn = document.getElementById('modal-play-btn');
-const modalPrevBtn = document.getElementById('modal-prev-btn');
-const modalNextBtn = document.getElementById('modal-next-btn');
 const modalFavBtn = document.getElementById('modal-fav-btn');
+
+const tabVideoBtn = document.getElementById('tab-video-btn');
+const tabCoverBtn = document.getElementById('tab-cover-btn');
+const videoContainerView = document.getElementById('video-container-view');
+const coverContainerView = document.getElementById('cover-container-view');
+
+tabVideoBtn.addEventListener('click', () => {
+    tabVideoBtn.classList.add('active');
+    tabCoverBtn.classList.remove('active');
+    videoContainerView.style.display = 'block';
+    coverContainerView.style.display = 'none';
+});
+
+tabCoverBtn.addEventListener('click', () => {
+    tabCoverBtn.classList.add('active');
+    tabVideoBtn.classList.remove('active');
+    coverContainerView.style.display = 'block';
+    videoContainerView.style.display = 'none';
+});
 
 function sincronizarDatosModal() {
     const cancionActual = canciones[cancionActualIndex];
@@ -323,7 +379,7 @@ function sincronizarDatosModal() {
         modalTrackArtist.textContent = partes[1];
     } else {
         modalTrackTitle.textContent = cancionActual.titulo;
-        modalTrackArtist.textContent = "Artista Desconocido";
+        modalTrackArtist.textContent = "Artista Verificado";
     }
     actualizarBotonesCorazon();
 }
@@ -331,20 +387,13 @@ function sincronizarDatosModal() {
 openModalBtn.addEventListener('click', () => {
     sincronizarDatosModal();
     playerModal.style.display = 'flex';
-    modalPlayBtn.textContent = isPlaying ? '⏸ Pausar' : '▶ Reproducir';
+    if(modalPlayBtn) modalPlayBtn.textContent = isPlaying ? '⏸' : '▶';
 });
 
 closeModalBtn.addEventListener('click', () => { playerModal.style.display = 'none'; });
-modalPlayBtn.addEventListener('click', () => { if (isPlaying) pauseSong(); else playSong(); });
-modalNextBtn.addEventListener('click', () => { siguienteCancion(); sincronizarDatosModal(); });
-modalPrevBtn.addEventListener('click', () => { anteriorCancion(); sincronizarDatosModal(); });
+if(modalPlayBtn) {
+    modalPlayBtn.addEventListener('click', () => { if (isPlaying) pauseSong(); else playSong(); });
+}
+document.getElementById('modal-next-btn').addEventListener('click', () => { siguienteCancion(); sincronizarDatosModal(); });
+document.getElementById('modal-prev-btn').addEventListener('click', () => { anteriorCancion(); sincronizarDatosModal(); });
 modalFavBtn.addEventListener('click', () => { alternarFavorito(canciones[cancionActualIndex].id); });
-
-audio.addEventListener('timeupdate', () => {
-    if (playerModal.style.display === 'flex' && audio.duration) {
-        modalProgressBar.value = (audio.currentTime / audio.duration) * 100;
-        modalCurrentTimeEl.textContent = currentTimeEl.textContent;
-        modalDurationEl.textContent = durationEl.textContent;
-    }
-});
-modalProgressBar.addEventListener('input', () => { audio.currentTime = (modalProgressBar.value / 100) * audio.duration; });
