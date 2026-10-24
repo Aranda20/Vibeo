@@ -1,7 +1,6 @@
 let player;
 let isYoutubeReady = false;
 
-// Callback automático requerido por la API de YouTube
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('youtube-player', {
         height: '100%',
@@ -37,7 +36,6 @@ function onPlayerStateChange(event) {
     }
 }
 
-// Lista maestra actualizada con el ID de YouTube de cada canción
 const canciones = [
     { id: 0, titulo: "Morir de Amor - Miguel Bosé", youtubeId: "h1R6v9K63yY", portadaUrl: "assets/imagenes/portada1.jfif" },
     { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", youtubeId: "X8c9L7G41wM", portadaUrl: "assets/imagenes/portada2.jfif" },
@@ -53,7 +51,6 @@ let cancionActualIndex = 0;
 let isPlaying = false;
 let favoritos = JSON.parse(localStorage.getItem('vibeo_favs')) || [];
 
-// Elementos DOM
 const playBtn = document.getElementById('play-btn');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
@@ -183,7 +180,6 @@ function anteriorCancion() {
     playSong();
 }
 
-// Actualizador de barra de progreso basado en YouTube API
 setInterval(() => {
     if (isPlaying && isYoutubeReady && player && player.getCurrentTime && player.getDuration) {
         const currentTime = player.getCurrentTime();
@@ -262,7 +258,6 @@ function procesarBusqueda(inputElement, dropdownElement) {
 searchInput.addEventListener('input', () => procesarBusqueda(searchInput, searchResults));
 searchInputMobile.addEventListener('input', () => procesarBusqueda(searchInputMobile, searchResultsMobile));
 
-// NAVEGACIÓN ARTISTAS
 document.querySelectorAll('.artist-card').forEach(card => {
     card.addEventListener('click', () => {
         const nombreArtista = card.getAttribute('data-artista');
@@ -340,7 +335,6 @@ function renderizarBiblioteca() {
     });
 }
 
-// MODAL Y GESTIÓN DE PESTAÑAS (VÍDEO / PORTADA)
 const playerModal = document.getElementById('player-modal');
 const openModalBtn = document.getElementById('open-modal-btn');
 const closeModalBtn = document.getElementById('close-modal-btn');
@@ -397,3 +391,4 @@ if(modalPlayBtn) {
 document.getElementById('modal-next-btn').addEventListener('click', () => { siguienteCancion(); sincronizarDatosModal(); });
 document.getElementById('modal-prev-btn').addEventListener('click', () => { anteriorCancion(); sincronizarDatosModal(); });
 modalFavBtn.addEventListener('click', () => { alternarFavorito(canciones[cancionActualIndex].id); });
+
