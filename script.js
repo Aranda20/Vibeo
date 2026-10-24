@@ -47,12 +47,6 @@ function abrirReproductor(cancion) {
     window.location.href = url;
 }
 
-document.getElementById('open-modal-btn').addEventListener('click', () => {
-    if (playlistActual.length > 0) {
-        abrirReproductor(playlistActual[0]);
-    }
-});
-
 function ejecutarBusqueda(query) {
     if (!query || query.trim().length === 0) return;
 
@@ -88,9 +82,6 @@ function ejecutarBusqueda(query) {
                     `;
 
                     fila.addEventListener('click', () => {
-                        document.getElementById('track-title').textContent = `${cancion.titulo} - ${cancion.artista}`;
-                        document.getElementById('cover').src = cancion.portadaUrl;
-                        document.querySelector('.player-container').style.display = 'flex';
                         abrirReproductor(cancion);
                     });
 
@@ -154,6 +145,7 @@ document.querySelectorAll('.artist-card').forEach(card => {
                             <span class="play-row-icon">▶</span>
                         `;
                         fila.addEventListener('click', () => {
+                            abrirReservado = cancion;
                             abrirReproductor(cancion);
                         });
                         artistSongsList.appendChild(fila);
