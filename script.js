@@ -1,21 +1,5 @@
 let playlistActual = [];
-let indiceActual = 0;
 let favoritos = JSON.parse(localStorage.getItem('vibeo_favs')) || [];
-
-const audioElement = document.getElementById('audio-player');
-
-const playBtn = document.getElementById('play-btn');
-const modalPlayBtn = document.getElementById('modal-play-btn');
-const nextBtn = document.getElementById('next-btn');
-const prevBtn = document.getElementById('prev-btn');
-const trackTitle = document.getElementById('track-title');
-const cover = document.getElementById('cover');
-const progressBar = document.getElementById('progress-bar');
-const modalProgressBar = document.getElementById('modal-progress-bar');
-const currentTimeEl = document.getElementById('current-time');
-const durationEl = document.getElementById('duration');
-const playerFavBtn = document.getElementById('player-fav-btn');
-const modalFavBtn = document.getElementById('modal-fav-btn');
 
 const searchInputMobile = document.getElementById('search-input-mobile');
 const searchInputDesktop = document.getElementById('search-input');
@@ -57,121 +41,19 @@ document.getElementById('back-from-search-btn').addEventListener('click', () => 
 document.getElementById('view-favorites-btn').addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
 document.getElementById('sidebar-library-btn').addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
 
-// REPRODUCCIÓN BLINDADA DE AUDIO COMPLETO
-function cargarYReproducir(cancion) {
+function abrirReproductor(cancion) {
     if (!cancion) return;
-
-    trackTitle.textContent = `${cancion.titulo} - ${cancion.artista}`;
-    cover.src = cancion.portadaUrl;
-    document.getElementById('modal-cover').src = cancion.portadaUrl;
-    document.getElementById('modal-track-title').textContent = cancion.titulo;
-    document.getElementById('modal-track-artist').textContent = cancion.artista;
-    
-    document.querySelector('.player-container').style.display = 'flex';
-    actualizarCorazonEstado();
-
-    const query = encodeURIComponent(`${cancion.titulo} ${cancion.artista}`);
-
-    // Usamos pasarelas públicas de streaming de audio completo sin restricciones de vídeo
-    fetch(`https://pipedapi.kavin.rocks/search?q=${query}&filter=music_songs`)
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.items && data.items.length > 0) {
-                const videoId = data.items[0].url.split("v=")[1];
-                return fetch(`https://pipedapi.kavin.rocks/streams/${videoId}`);
-            } else {
-                throw new Error("Búsqueda alternativa");
-            }
-        })
-        .then(res => res.json())
-        .then(streamData => {
-            if (streamData && streamData.audioStreams && streamData.audioStreams.length > 0) {
-                const bestAudio = streamData.audioStreams.find(s => s.mimeType.includes("audio/mp4")) || streamData.audioStreams[0];
-                audioElement.src = bestAudio.url;
-                audioElement.play();
-                playBtn.textContent = '⏸';
-                if (modalPlayBtn) modalPlayBtn.textContent = '⏸';
-            } else {
-                throw new Error("Sin audio stream");
-            }
-        })
-        .catch(() => {
-            // Respaldo secundario infalible con servidor proxy de audio directo
-            audioElement.src = `https://invidious.io.lol/api/v1/search?q=${query}`;
-            audioElement.play().catch(err => console.log("Reproducción iniciada con controles manuales", err));
-            playBtn.textContent = '⏸';
-            if (modalPlayBtn) modalPlayBtn.textContent = '⏸';
-        });
+    // Redirigir a la segunda página pasando los datos por URL de forma limpia
+    const url = `reproductor.html?titulo=${encodeURIComponent(cancion.titulo)}&artista=${encodeURIComponent(cancion.artista)}&portada=${encodeURIComponent(cancion.portadaUrl)}`;
+    window.location.href = url;
 }
 
-function alternarReproduccion() {
-    if (audioElement.paused) {
-        audioElement.play();
-        playBtn.textContent = '⏸';
-        if (modalPlayBtn) modalPlayBtn.textContent = '⏸';
-    } else {
-        audioElement.pause();
-        playBtn.textContent = '▶';
-        if (modalPlayBtn) modalPlayBtn.textContent = '▶';
-    }
-}
-
-playBtn.addEventListener('click', alternarReproduccion);
-if (modalPlayBtn) modalPlayBtn.addEventListener('click', alternarReproduccion);
-nextBtn.addEventListener('click', siguienteCancion);
-prevBtn.addEventListener('click', anteriorCancion);
-
-function siguienteCancion() {
-    if (playlistActual.length === 0) return;
-    indiceActual = (indiceActual + 1) % playlistActual.length;
-    cargarYReproducir(playlistActual[indiceActual]);
-}
-
-function anteriorCancion() {
-    if (playlistActual.length === 0) return;
-    indiceActual = (indiceActual - 1 + playlistActual.length) % playlistActual.length;
-    cargarYReproducir(playlistActual[indiceActual]);
-}
-
-audioElement.addEventListener('timeupdate', () => {
-    if (audioElement.duration) {
-        const prog = (audioElement.currentTime / audioElement.duration) * 100;
-        progressBar.value = prog;
-        if (modalProgressBar) modalProgressBar.value = prog;
-        currentTimeEl.textContent = formatearTiempo(audioElement.currentTime);
-        durationEl.textContent = formatearTiempo(audioElement.duration);
-        const mCur = document.getElementById('modal-current-time');
-        const mDur = document.getElementById('modal-duration');
-        if (mCur) mCur.textContent = currentTimeEl.textContent;
-        if (mDur) mDur.textContent = durationEl.textContent;
+document.getElementById('open-modal-btn').addEventListener('click', () => {
+    if (playlistActual.length > 0) {
+        abrirReproductor(playlistActual[0]);
     }
 });
 
-audioElement.addEventListener('ended', () => {
-    siguienteCancion();
-});
-
-progressBar.addEventListener('input', () => {
-    if (audioElement.duration) {
-        audioElement.currentTime = (progressBar.value / 100) * audioElement.duration;
-    }
-});
-
-if (modalProgressBar) {
-    modalProgressBar.addEventListener('input', () => {
-        if (audioElement.duration) {
-            audioElement.currentTime = (modalProgressBar.value / 100) * audioElement.duration;
-        }
-    });
-}
-
-function formatearTiempo(segundos) {
-    const min = Math.floor(segundos / 60);
-    const sec = Math.floor(segundos % 60);
-    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-}
-
-// BÚSQUEDA VISUAL USANDO ITUNES API PARA PORTADAS EN HD
 function ejecutarBusqueda(query) {
     if (!query || query.trim().length === 0) return;
 
@@ -207,8 +89,10 @@ function ejecutarBusqueda(query) {
                     `;
 
                     fila.addEventListener('click', () => {
-                        indiceActual = index;
-                        cargarYReproducir(cancion);
+                        document.getElementById('track-title').textContent = `${cancion.titulo} - ${cancion.artista}`;
+                        document.getElementById('cover').src = cancion.portadaUrl;
+                        document.querySelector('.player-container').style.display = 'flex';
+                        abrirReproductor(cancion);
                     });
 
                     searchResultsList.appendChild(fila);
@@ -271,8 +155,7 @@ document.querySelectorAll('.artist-card').forEach(card => {
                             <span class="play-row-icon">▶</span>
                         `;
                         fila.addEventListener('click', () => {
-                            indiceActual = index;
-                            cargarYReproducir(cancion);
+                            abrirReproductor(cancion);
                         });
                         artistSongsList.appendChild(fila);
                     });
@@ -281,71 +164,8 @@ document.querySelectorAll('.artist-card').forEach(card => {
     });
 });
 
-function actualizarCorazonEstado() {
-    const cancion = playlistActual[indiceActual];
-    if (!cancion) return;
-    const esFav = favoritos.some(f => f.titulo === cancion.titulo);
-    playerFavBtn.textContent = esFav ? '❤️' : '♡';
-    if (modalFavBtn) modalFavBtn.textContent = esFav ? '❤️' : '♡';
-}
-
-function alternarFavoritoActual() {
-    const cancion = playlistActual[indiceActual];
-    if (!cancion) return;
-    const idx = favoritos.findIndex(f => f.titulo === cancion.titulo);
-    if (idx >= 0) {
-        favoritos.splice(idx, 1);
-    } else {
-        favoritos.push(cancion);
-    }
-    localStorage.setItem('vibeo_favs', JSON.stringify(favoritos));
-    actualizarCorazonEstado();
-}
-
-playerFavBtn.addEventListener('click', alternarFavoritoActual);
-if (modalFavBtn) modalFavBtn.addEventListener('click', alternarFavoritoActual);
-
 function renderizarBiblioteca() {
     librarySongsList.innerHTML = '';
     document.getElementById('fav-count').textContent = `${favoritos.length} canciones guardadas`;
-
-    if (favoritos.length === 0) {
-        librarySongsList.innerHTML = '<p style="color:#b3b3b3; padding:20px 10px;">Aún no tienes canciones favoritas.</p>';
-        return;
-    }
-
-    favoritos.forEach((cancion, index) => {
-        const fila = document.createElement('div');
-        fila.classList.add('song-row-item');
-        fila.innerHTML = `
-            <div class="song-left-part">
-                <span class="track-number">${index + 1}</span>
-                <img src="${cancion.portadaUrl}" class="mini-row-cover">
-                <div>
-                    <div class="track-name-text" style="font-weight:bold;">${cancion.titulo}</div>
-                    <div style="font-size:0.8rem; color:#b3b3b3;">${cancion.artista}</div>
-                </div>
-            </div>
-            <button class="remove-fav-btn" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">❤️</button>
-        `;
-
-        fila.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-fav-btn')) {
-                favoritos = favoritos.filter(f => f.titulo !== cancion.titulo);
-                localStorage.setItem('vibeo_favs', JSON.stringify(favoritos));
-                renderizarBiblioteca();
-                actualizarCorazonEstado();
-                return;
-            }
-            playlistActual = [cancion, ...favoritos];
-            indiceActual = 0;
-            cargarYReproducir(cancion);
-        });
-        librarySongsList.appendChild(fila);
-    });
 }
-
-const playerModal = document.getElementById('player-modal');
-document.getElementById('open-modal-btn').addEventListener('click', () => { playerModal.style.display = 'flex'; });
-document.getElementById('close-modal-btn').addEventListener('click', () => { playerModal.style.display = 'none'; });
 
