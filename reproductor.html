@@ -15,7 +15,7 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
             box-sizing: border-box;
         }
         .player-card {
@@ -31,11 +31,11 @@
             box-shadow: 0 8px 24px rgba(0,0,0,0.8);
         }
         .cover-box {
-            width: 260px;
-            height: 260px;
+            width: 220px;
+            height: 220px;
             border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .cover-box img {
             width: 100%;
@@ -44,11 +44,11 @@
         }
         .track-meta {
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .track-meta h2 {
             margin: 0 0 6px 0;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -56,25 +56,24 @@
         .track-meta p {
             margin: 0;
             color: #b3b3b3;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
-        .audio-wrapper {
+        .video-container {
             width: 100%;
-            margin-top: 10px;
-        }
-        audio {
-            width: 100%;
-            outline: none;
+            height: 160px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 16px;
         }
         .btn-volver {
             background-color: #1db954;
             color: #000;
             border: none;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            margin-top: 24px;
             text-decoration: none;
             display: inline-block;
         }
@@ -92,8 +91,8 @@
             <p id="player-artist">Vibeo</p>
         </div>
 
-        <div class="audio-wrapper">
-            <audio id="main-audio" controls autoplay></audio>
+        <div class="video-container">
+            <iframe id="youtube-frame" width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
         <a href="index.html" class="btn-volver">← Volver a Vibeo</a>
