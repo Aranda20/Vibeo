@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibeo - Reproductor YouTube</title>
+    <title>Vibeo - Reproductor Web</title>
     <link rel="stylesheet" href="style.css">
-    <!-- SDK oficial de la API de YouTube -->
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
@@ -157,23 +156,20 @@
         </div>
     </nav>
 
-    <!-- MODAL EXPANDIDO MÓVIL (ESTILO WIMBI / SPOTIFY) -->
+    <!-- MODAL EXPANDIDO MÓVIL (ESTILO WIMBI) -->
     <div id="player-modal" class="modal-overlay">
         <div class="modal-content">
             <button id="close-modal-btn" class="modal-close">✕</button>
             
-            <!-- Selector de Pestañas: Vídeo / Portada -->
             <div class="modal-tabs">
                 <button class="tab-btn active" id="tab-video-btn">Vídeo</button>
                 <button class="tab-btn" id="tab-cover-btn">Portada</button>
             </div>
 
-            <!-- Contenedor del Vídeo de YouTube -->
             <div id="video-container-view" class="media-display-box">
                 <div id="youtube-player"></div>
             </div>
 
-            <!-- Contenedor de la Portada -->
             <div id="cover-container-view" class="media-display-box" style="display: none;">
                 <img id="modal-cover" src="" alt="Portada Expandida" class="modal-cover-art">
             </div>
@@ -203,3 +199,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
