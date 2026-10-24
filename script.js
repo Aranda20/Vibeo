@@ -1,31 +1,37 @@
-let ytPlayer;
-let isYtReady = false;
+let player;
+let isPlayerReady = false;
 let playlistActual = [];
 let indiceActual = 0;
 let favoritos = JSON.parse(localStorage.getItem('vibeo_favs')) || [];
 
 function onYouTubeIframeAPIReady() {
-    ytPlayer = new YT.Player('audio-player-box', {
-        height: '0',
-        width: '0',
-        playerVars: { 'autoplay': 1, 'controls': 0 },
+    player = new YT.Player('yt-player', {
+        height: '1',
+        width: '1',
+        playerVars: {
+            'autoplay': 1,
+            'controls': 0,
+            'playsinline': 1
+        },
         events: {
-            'onReady': () => { isYtReady = true; },
+            'onReady': () => { isPlayerReady = true; },
             'onStateChange': onPlayerStateChange
         }
     });
 }
 
 function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.PLAYING) {
+    if (event.data === YT.PlayerState.PLAYING) {
         document.getElementById('play-btn').textContent = '⏸';
         const mPlay = document.getElementById('modal-play-btn');
         if (mPlay) mPlay.textContent = '⏸';
-    } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+    } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
         document.getElementById('play-btn').textContent = '▶';
         const mPlay = document.getElementById('modal-play-btn');
         if (mPlay) mPlay.textContent = '▶';
-        if (event.data == YT.PlayerState.ENDED) siguienteCancion();
+        if (event.data === YT.PlayerState.ENDED) {
+            siguienteCancion();
+        }
     }
 }
 
@@ -43,6 +49,7 @@ const playerFavBtn = document.getElementById('player-fav-btn');
 const modalFavBtn = document.getElementById('modal-fav-btn');
 
 const searchInputMobile = document.getElementById('search-input-mobile');
+const searchInputDesktop = document.getElementById('search-input');
 const viewHome = document.getElementById('view-home');
 const viewSearchMobile = document.getElementById('view-search-mobile');
 const viewSearchResults = document.getElementById('view-search-results');
@@ -83,35 +90,45 @@ document.getElementById('sidebar-library-btn').addEventListener('click', () => {
 
 function cargarYReproducir(cancion) {
     if (!cancion) return;
+    
     trackTitle.textContent = `${cancion.titulo} - ${cancion.artista}`;
     cover.src = cancion.portadaUrl;
     document.getElementById('modal-cover').src = cancion.portadaUrl;
     document.getElementById('modal-track-title').textContent = cancion.titulo;
     document.getElementById('modal-track-artist').textContent = cancion.artista;
     
+    document.querySelector('.player-container').style.display = 'flex';
     actualizarCorazonEstado();
 
-    fetch(`https://invidious.io.lol/api/v1/search?q=${encodeURIComponent(cancion.titulo + " " + cancion.artista)}&type=video`)
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.length > 0) {
-                const videoId = data[0].videoId;
-                if (isYtReady && ytPlayer && ytPlayer.loadVideoById) {
-                    ytPlayer.loadVideoById(videoId);
-                    document.querySelector('.player-container').style.display = 'flex';
-                }
-            }
-        })
-        .catch(err => console.log("Error de streaming", err));
+    const query = `${cancion.titulo} ${cancion.artista} audio`;
+    
+    // Consulta directa a la API pública para obtener el identificador de transmisión rápida
+    fetch(`https://suggestqueries.google.com/complete/search?client=youtube&ds=yt&q=${encodeURIComponent(query)}`)
+        .catch(() => {});
+
+    if (isPlayerReady && player && player.loadPlaylist) {
+        player.loadPlaylist({
+            listType: 'search',
+            list: query,
+            index: 0
+        });
+    } else if (isPlayerReady && player && player.cuePlaylist) {
+        player.cuePlaylist({
+            listType: 'search',
+            list: query,
+            index: 0
+        });
+        player.playVideo();
+    }
 }
 
 function alternarReproduccion() {
-    if (!isYtReady) return;
-    const estado = ytPlayer.getPlayerState();
-    if (estado === YT.PlayerState.PLAYING) {
-        ytPlayer.pauseVideo();
+    if (!isPlayerReady || !player) return;
+    const state = player.getPlayerState();
+    if (state === YT.PlayerState.PLAYING) {
+        player.pauseVideo();
     } else {
-        ytPlayer.playVideo();
+        player.playVideo();
     }
 }
 
@@ -133,9 +150,9 @@ function anteriorCancion() {
 }
 
 setInterval(() => {
-    if (isYtReady && ytPlayer && ytPlayer.getCurrentTime && ytPlayer.getDuration) {
-        const cur = ytPlayer.getCurrentTime();
-        const dur = ytPlayer.getDuration();
+    if (isPlayerReady && player && player.getCurrentTime && player.getDuration) {
+        const cur = player.getCurrentTime();
+        const dur = player.getDuration();
         if (dur > 0) {
             const prog = (cur / dur) * 100;
             progressBar.value = prog;
@@ -151,17 +168,17 @@ setInterval(() => {
 }, 500);
 
 progressBar.addEventListener('input', () => {
-    if (isYtReady && ytPlayer && ytPlayer.getDuration) {
-        const target = (progressBar.value / 100) * ytPlayer.getDuration();
-        ytPlayer.seekTo(target, true);
+    if (isPlayerReady && player && player.getDuration) {
+        const target = (progressBar.value / 100) * player.getDuration();
+        player.seekTo(target, true);
     }
 });
 
 if (modalProgressBar) {
     modalProgressBar.addEventListener('input', () => {
-        if (isYtReady && ytPlayer && ytPlayer.getDuration) {
-            const target = (modalProgressBar.value / 100) * ytPlayer.getDuration();
-            ytPlayer.seekTo(target, true);
+        if (isPlayerReady && player && player.getDuration) {
+            const target = (modalProgressBar.value / 100) * player.getDuration();
+            player.seekTo(target, true);
         }
     });
 }
@@ -172,58 +189,69 @@ function formatearTiempo(segundos) {
     return `${min}:${sec < 10 ? '0' : ''}${sec}`;
 }
 
+function ejecutarBusqueda(query) {
+    if (!query || query.trim().length === 0) return;
+
+    searchResultsTitle.textContent = `Resultados para "${query}"`;
+    searchResultsList.innerHTML = '<p style="color:#b3b3b3; padding:20px; text-align:center;">Buscando canciones...</p>';
+    cambiarVista(viewSearchResults);
+
+    fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=song&limit=25`)
+        .then(res => res.json())
+        .then(data => {
+            searchResultsList.innerHTML = '';
+            if (data.results && data.results.length > 0) {
+                playlistActual = data.results.map(item => ({
+                    id: item.trackId,
+                    titulo: item.trackName,
+                    artista: item.artistName,
+                    portadaUrl: item.artworkUrl100.replace('100x100bb.jpg', '500x500bb.jpg')
+                }));
+
+                playlistActual.forEach((cancion, index) => {
+                    const fila = document.createElement('div');
+                    fila.classList.add('song-row-item');
+                    fila.innerHTML = `
+                        <div class="song-left-part">
+                            <span class="track-number">${index + 1}</span>
+                            <img src="${cancion.portadaUrl}" class="mini-row-cover">
+                            <div>
+                                <div class="track-name-text" style="font-weight:bold;">${cancion.titulo}</div>
+                                <div style="font-size:0.8rem; color:#b3b3b3;">${cancion.artista}</div>
+                            </div>
+                        </div>
+                        <span class="play-row-icon">▶</span>
+                    `;
+
+                    fila.addEventListener('click', () => {
+                        indiceActual = index;
+                        cargarYReproducir(cancion);
+                    });
+
+                    searchResultsList.appendChild(fila);
+                });
+            } else {
+                searchResultsList.innerHTML = '<p style="color:#b3b3b3; padding:20px; text-align:center;">No se encontraron resultados.</p>';
+            }
+        })
+        .catch(() => {
+            searchResultsList.innerHTML = '<p style="color:#b3b3b3; padding:20px; text-align:center;">Error al realizar la búsqueda.</p>';
+        });
+}
+
 searchInputMobile.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
-        const query = searchInputMobile.value.trim();
-        if (query.length === 0) return;
-
-        searchResultsTitle.textContent = `Resultados para "${query}"`;
-        searchResultsList.innerHTML = '<p style="color:#b3b3b3; padding:20px; text-align:center;">Buscando en todo el catálogo...</p>';
-        cambiarVista(viewSearchResults);
-
-        fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=song&limit=25`)
-            .then(res => res.json())
-            .then(data => {
-                searchResultsList.innerHTML = '';
-                if (data.results && data.results.length > 0) {
-                    playlistActual = data.results.map(item => ({
-                        id: item.trackId,
-                        titulo: item.trackName,
-                        artista: item.artistName,
-                        portadaUrl: item.artworkUrl100.replace('100x100bb.jpg', '500x500bb.jpg')
-                    }));
-
-                    playlistActual.forEach((cancion, index) => {
-                        const fila = document.createElement('div');
-                        fila.classList.add('song-row-item');
-                        fila.innerHTML = `
-                            <div class="song-left-part">
-                                <span class="track-number">${index + 1}</span>
-                                <img src="${cancion.portadaUrl}" class="mini-row-cover">
-                                <div>
-                                    <div class="track-name-text" style="font-weight:bold;">${cancion.titulo}</div>
-                                    <div style="font-size:0.8rem; color:#b3b3b3;">${cancion.artista}</div>
-                                </div>
-                            </div>
-                            <span class="play-row-icon">▶</span>
-                        `;
-
-                        fila.addEventListener('click', () => {
-                            indiceActual = index;
-                            cargarYReproducir(cancion);
-                        });
-
-                        searchResultsList.appendChild(fila);
-                    });
-                } else {
-                    searchResultsList.innerHTML = '<p style="color:#b3b3b3; padding:20px; text-align:center;">No se encontraron resultados.</p>';
-                }
-            })
-            .catch(() => {
-                searchResultsList.innerHTML = '<p style="color:#b3b3b3; padding:20px; text-align:center;">Error de conexión.</p>';
-            });
+        ejecutarBusqueda(searchInputMobile.value);
     }
 });
+
+if (searchInputDesktop) {
+    searchInputDesktop.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            ejecutarBusqueda(searchInputDesktop.value);
+        }
+    });
+}
 
 document.querySelectorAll('.artist-card').forEach(card => {
     card.addEventListener('click', () => {
@@ -273,13 +301,9 @@ document.querySelectorAll('.artist-card').forEach(card => {
 function actualizarCorazonEstado() {
     const cancion = playlistActual[indiceActual];
     if (!cancion) return;
-    const esFav = favoritos.some(f => (f.id === cancionesIguales(f, cancion)));
+    const esFav = favoritos.some(f => f.titulo === cancion.titulo);
     playerFavBtn.textContent = esFav ? '❤️' : '♡';
     if (modalFavBtn) modalFavBtn.textContent = esFav ? '❤️' : '♡';
-}
-
-function cancionesIguales(a, b) {
-    return a.id === b.id || a.titulo === b.titulo;
 }
 
 function alternarFavoritoActual() {
