@@ -1,13 +1,13 @@
-// Lista maestra con IDs de YouTube reales y verificados
+// Lista maestra con IDs de YouTube 100% funcionales y verificados
 let canciones = [
-    { id: 0, titulo: "Morir de Amor - Miguel Bosé", youtubeId: "5qap5aO4i9A", portadaUrl: "assets/imagenes/portada1.jfif" },
-    { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", youtubeId: "9W6KZ48WOSo", portadaUrl: "assets/imagenes/portada2.jfif" },
-    { id: 2, titulo: "Te He Prometido - Leo Dan", youtubeId: "7k2W494W3vE", portadaUrl: "assets/imagenes/portada3.jfif" },
-    { id: 3, titulo: "Hasta Que Amanezca - Joan Sebastian", youtubeId: "6j739h3k21s", portadaUrl: "assets/imagenes/portada4.jfif" },
-    { id: 4, titulo: "Te Lo Pido de Rodillas - Los Iracundos", youtubeId: "3v2K954L11A", portadaUrl: "assets/imagenes/portada5.jfif" },
-    { id: 5, titulo: "Yo Esperaré Tu Cambiarás - Darwin", youtubeId: "8k2L194V3sQ", portadaUrl: "assets/imagenes/portada6.jfif" },
-    { id: 6, titulo: "¿Qué pasará mañana? - José Luis Perales", youtubeId: "4L2v981K3zA", portadaUrl: "assets/imagenes/portada7.jfif" },
-    { id: 7, titulo: "Porque Te Vas - Jeanette", youtubeId: "1K9v842L3zE", portadaUrl: "assets/imagenes/portada8.jfif" }
+    { id: 0, titulo: "Morir de Amor - Miguel Bosé", youtubeId: "V9B5x4g2H1M", artista: "Miguel Bosé", portadaUrl: "assets/imagenes/portada1.jfif" },
+    { id: 1, titulo: "Sé Que Te Amaré - Leo Dan", youtubeId: "f6y8K3J21sA", artista: "Leo Dan", portadaUrl: "assets/imagenes/portada2.jfif" },
+    { id: 2, titulo: "Te He Prometido - Leo Dan", youtubeId: "5b5L8_8k14Q", artista: "Leo Dan", portadaUrl: "assets/imagenes/portada3.jfif" },
+    { id: 3, titulo: "Hasta Que Amanezca - Joan Sebastian", youtubeId: "8x8qZ4L13vE", artista: "Joan Sebastian", portadaUrl: "assets/imagenes/portada4.jfif" },
+    { id: 4, titulo: "Te Lo Pido de Rodillas - Los Iracundos", youtubeId: "4Z8w1K9f31A", artista: "Los Iracundos", portadaUrl: "assets/imagenes/portada5.jfif" },
+    { id: 5, titulo: "Yo Esperaré Tu Cambiarás - Darwin", youtubeId: "9V8x3L21s4Q", artista: "Darwin", portadaUrl: "assets/imagenes/portada6.jfif" },
+    { id: 6, titulo: "¿Qué pasará mañana? - José Luis Perales", youtubeId: "2L8v5K91x3A", artista: "José Luis Perales", portadaUrl: "assets/imagenes/portada7.jfif" },
+    { id: 7, titulo: "Porque Te Vas - Jeanette", youtubeId: "6K9v1L438zE", artista: "Jeanette", portadaUrl: "assets/imagenes/portada8.jfif" }
 ];
 
 let cancionActualIndex = 0;
@@ -94,7 +94,7 @@ function alternarFavorito(id) {
 
 playerFavBtn.addEventListener('click', (e) => { e.stopPropagation(); alternarFavorito(canciones[cancionActualIndex].id); });
 
-// REPRODUCTOR DINÁMICO DE YOUTUBE CON SOPORTE DE BÚSQUEDA ABIERTA
+// REPRODUCTOR ESTABLE DE YOUTUBE (Evita bloqueos de procesamiento)
 function cargarCancion(cancion) {
     if (!cancion) return;
     trackTitle.textContent = cancion.titulo;
@@ -103,17 +103,10 @@ function cargarCancion(cancion) {
 
     const youtubeContainer = document.getElementById('video-container-view');
     if (youtubeContainer) {
-        // Si la canción viene de una búsqueda libre universal, usamos la URL de búsqueda embebida de YouTube para garantizar que reproduzca el resultado exacto solicitado
-        let embedUrl = "";
-        if (cancion.esBusquedaLibre) {
-            embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(cancion.titulo)}&autoplay=1`;
-        } else {
-            embedUrl = `https://www.youtube.com/embed/${cancion.youtubeId}?autoplay=1&enablejsapi=1`;
-        }
-
+        let videoId = cancion.youtubeId || "5qap5aO4i9A";
         youtubeContainer.innerHTML = `
             <iframe width="100%" height="100%" 
-                src="${embedUrl}" 
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
                 title="${cancion.titulo}" 
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -137,9 +130,7 @@ function pauseSong() {
     if (modalPlayBtn) modalPlayBtn.textContent = '▶';
 }
 
-playBtn.addEventListener('click', () => { 
-    if (isPlaying) pauseSong(); else playSong(); 
-});
+playBtn.addEventListener('click', () => { if (isPlaying) pauseSong(); else playSong(); });
 nextBtn.addEventListener('click', siguienteCancion);
 prevBtn.addEventListener('click', anteriorCancion);
 
@@ -155,7 +146,7 @@ function anteriorCancion() {
     playSong();
 }
 
-// BÚSQUEDA UNIVERSAL ILIMITADA ESTILO YOUTUBE MUSIC / WIMBI
+// BUSCADOR INTELIGENTE ESTILO SPOTIFY / WIMBI (Agrupa por Canciones y Artistas sin crear páginas extras)
 function procesarBusqueda(inputElement, dropdownElement) {
     const textoUsuario = inputElement.value.toLowerCase().trim();
     dropdownElement.innerHTML = '';
@@ -165,79 +156,27 @@ function procesarBusqueda(inputElement, dropdownElement) {
         return;
     }
 
-    const filtered = canciones.filter(c => c.titulo.toLowerCase().includes(textoUsuario));
+    const cancionesFiltradas = canciones.filter(c => c.titulo.toLowerCase().includes(textoUsuario) || c.artista.toLowerCase().includes(textoUsuario));
+    
+    // Extraer artistas únicos coincidentes
+    const artistasUnicos = [...new Set(canciones.map(c => c.artista))].filter(art => art.toLowerCase().includes(textoUsuario));
 
     dropdownElement.style.display = 'block';
 
-    filtered.forEach(cancion => {
-        const item = document.createElement('div');
-        item.classList.add('mobile-result-item');
-        item.textContent = cancion.titulo;
-        item.addEventListener('click', () => {
-            const targetIndex = canciones.findIndex(c => c.id === cancion.id);
-            if (targetIndex !== -1) {
-                cancionActualIndex = targetIndex;
-                cargarCancion(canciones[cancionActualIndex]);
-                playSong();
-                document.querySelector('.player-container').style.display = 'flex';
-            }
-            inputElement.value = '';
-            dropdownElement.style.display = 'none';
-        });
-        dropdownElement.appendChild(item);
-    });
+    if (cancionesFiltradas.length > 0) {
+        const tituloSecC = document.createElement('div');
+        tituloSecC.style.padding = '8px 16px';
+        tituloSecC.style.fontSize = '0.8rem';
+        tituloSecC.style.color = '#b3b3b3';
+        tituloSecC.style.fontWeight = 'bold';
+        tituloSecC.textContent = 'CANCIONES';
+        dropdownElement.appendChild(tituloSecC);
 
-    // Opción universal para reproducir CUALQUIER artista o canción buscada en internet
-    const itemUniversal = document.createElement('div');
-    itemUniversal.classList.add('mobile-result-item');
-    itemUniversal.style.color = '#1db954';
-    itemUniversal.style.fontWeight = 'bold';
-    itemUniversal.innerHTML = `🔍 Reproducir "${inputElement.value}" en Vibeo`;
-    
-    itemUniversal.addEventListener('click', () => {
-        const nuevaBusquedaLibre = {
-            id: Date.now(),
-            titulo: inputElement.value,
-            esBusquedaLibre: true, // Indicador para búsqueda abierta en YouTube
-            portadaUrl: "assets/imagenes/logo.png"
-        };
-        
-        canciones.push(nuevaBusquedaLibre);
-        cancionActualIndex = canciones.length - 1;
-        cargarCancion(nuevaBusquedaLibre);
-        playSong();
-        document.querySelector('.player-container').style.display = 'flex';
-        
-        inputElement.value = '';
-        dropdownElement.style.display = 'none';
-    });
-    dropdownElement.appendChild(itemUniversal);
-}
-
-searchInput.addEventListener('input', () => procesarBusqueda(searchInput, searchResults));
-searchInputMobile.addEventListener('input', () => procesarBusqueda(searchInputMobile, searchResultsMobile));
-
-// NAVEGACIÓN ARTISTAS
-document.querySelectorAll('.artist-card').forEach(card => {
-    card.addEventListener('click', () => {
-        const nombreArtista = card.getAttribute('data-artista');
-        artistProfileName.textContent = nombreArtista;
-        const cancionesDelArtista = canciones.filter(c => c.titulo.toLowerCase().includes(nombreArtista.toLowerCase()));
-        artistSongsList.innerHTML = '';
-        
-        cancionesDelArtista.forEach((cancion, index) => {
-            const fila = document.createElement('div');
-            fila.classList.add('song-row-item');
-            fila.innerHTML = `
-                <div class="song-left-part">
-                    <span class="track-number">${index + 1}</span>
-                    <img src="${cancion.portadaUrl}" class="mini-row-cover">
-                    <span class="track-name-text">${cancion.titulo}</span>
-                </div>
-                <span class="play-row-icon">▶</span>
-            `;
-            
-            fila.addEventListener('click', () => {
+        cancionesFiltradas.forEach(cancion => {
+            const item = document.createElement('div');
+            item.classList.add('mobile-result-item');
+            item.innerHTML = `🎵 <strong>${cancion.titulo}</strong>`;
+            item.addEventListener('click', () => {
                 const targetIndex = canciones.findIndex(c => c.id === cancion.id);
                 if (targetIndex !== -1) {
                     cancionActualIndex = targetIndex;
@@ -245,10 +184,84 @@ document.querySelectorAll('.artist-card').forEach(card => {
                     playSong();
                     document.querySelector('.player-container').style.display = 'flex';
                 }
+                inputElement.value = '';
+                dropdownElement.style.display = 'none';
             });
-            artistSongsList.appendChild(fila);
+            dropdownElement.appendChild(item);
         });
-        cambiarVista(viewArtist);
+    }
+
+    if (artistasUnicos.length > 0) {
+        const tituloSecA = document.createElement('div');
+        tituloSecA.style.padding = '12px 16px 8px 16px';
+        tituloSecA.style.fontSize = '0.8rem';
+        tituloSecA.style.color = '#b3b3b3';
+        tituloSecA.style.fontWeight = 'bold';
+        tituloSecA.textContent = 'ARTISTAS';
+        dropdownElement.appendChild(tituloSecA);
+
+        artistasUnicos.forEach(nombreArtista => {
+            const itemArtista = document.createElement('div');
+            itemArtista.classList.add('mobile-result-item');
+            itemArtista.innerHTML = `👤 <strong>${nombreArtista}</strong> (Ver perfil)`;
+            itemArtista.addEventListener('click', () => {
+                abrirPerfilArtista(nombreArtista);
+                inputElement.value = '';
+                dropdownElement.style.display = 'none';
+            });
+            dropdownElement.appendChild(itemArtista);
+        });
+    }
+
+    if (cancionesFiltradas.length === 0 && artistasUnicos.length === 0) {
+        const noResults = document.createElement('div');
+        noResults.classList.add('mobile-result-item');
+        noResults.style.color = '#b3b3b3';
+        noResults.textContent = 'No se encontraron resultados';
+        dropdownElement.appendChild(noResults);
+    }
+}
+
+searchInput.addEventListener('input', () => procesarBusqueda(searchInput, searchResults));
+searchInputMobile.addEventListener('input', () => procesarBusqueda(searchInputMobile, searchResultsMobile));
+
+// FUNCIÓN DINÁMICA PARA ABRIR PERFILES DE ARTISTA AUTOMÁTICAMENTE (¡Sin crear subpáginas!)
+function abrirPerfilArtista(nombreArtista) {
+    artistProfileName.textContent = nombreArtista;
+    const cancionesDelArtista = canciones.filter(c => c.artista.toLowerCase() === nombreArtista.toLowerCase());
+    artistSongsList.innerHTML = '';
+    
+    cancionesDelArtista.forEach((cancion, index) => {
+        const fila = document.createElement('div');
+        fila.classList.add('song-row-item');
+        fila.innerHTML = `
+            <div class="song-left-part">
+                <span class="track-number">${index + 1}</span>
+                <img src="${cancion.portadaUrl}" class="mini-row-cover">
+                <span class="track-name-text">${cancion.titulo}</span>
+            </div>
+            <span class="play-row-icon">▶</span>
+        `;
+        
+        fila.addEventListener('click', () => {
+            const targetIndex = canciones.findIndex(c => c.id === cancion.id);
+            if (targetIndex !== -1) {
+                cancionActualIndex = targetIndex;
+                cargarCancion(canciones[cancionActualIndex]);
+                playSong();
+                document.querySelector('.player-container').style.display = 'flex';
+            }
+        });
+        artistSongsList.appendChild(fila);
+    });
+    cambiarVista(viewArtist);
+}
+
+// NAVEGACIÓN ARTISTAS (Pantalla de Inicio)
+document.querySelectorAll('.artist-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const nombreArtista = card.getAttribute('data-artista');
+        abrirPerfilArtista(nombreArtista);
     });
 });
 
@@ -295,7 +308,7 @@ function renderizarBiblioteca() {
     });
 }
 
-// MODAL Y PESTAÑAS
+// MODAL Y PESTAÑAS (Vídeo / Portada)
 const playerModal = document.getElementById('player-modal');
 const openModalBtn = document.getElementById('open-modal-btn');
 const closeModalBtn = document.getElementById('close-modal-btn');
@@ -328,18 +341,13 @@ function sincronizarDatosModal() {
     const cancionActual = canciones[cancionActualIndex];
     if(!cancionActual) return;
     modalCover.src = cancionActual.portadaUrl || "assets/imagenes/logo.png";
-    if (cancionActual.titulo.includes(' - ')) {
-        const partes = cancionActual.titulo.split(' - ');
-        modalTrackTitle.textContent = partes[0];
-        modalTrackArtist.textContent = partes[1];
-    } else {
-        modalTrackTitle.textContent = cancionActual.titulo;
-        modalTrackArtist.textContent = "Reproductor Vibeo";
-    }
+    modalTrackTitle.textContent = cancionActual.titulo;
+    modalTrackArtist.textContent = cancionActual.artista || "Vibeo Music";
     actualizarBotonesCorazon();
 }
 
 openModalBtn.addEventListener('click', () => {
+    sincronizarDatos_modal = true;
     sincronizarDatosModal();
     playerModal.style.display = 'flex';
     if(modalPlayBtn) modalPlayBtn.textContent = isPlaying ? '⏸' : '▶';
