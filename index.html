@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vibeo - Reproductor Web</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
 
@@ -80,7 +79,7 @@
                 <div class="mobile-search-wrapper">
                     <h3>Buscar</h3>
                     <div class="mobile-search-box">
-                        <input type="text" id="search-input-mobile" placeholder="¿Qué quieres escuchar?" autocomplete="off">
+                        <input type="text" id="search-input-mobile" placeholder="Busca cualquier canción o artista..." autocomplete="off">
                         <div id="search-results-mobile" class="search-results-dropdown-mobile"></div>
                     </div>
                 </div>
@@ -156,7 +155,7 @@
         </div>
     </nav>
 
-    <!-- MODAL EXPANDIDO MÓVIL (ESTILO WIMBI) -->
+    <!-- MODAL EXPANDIDO MÓVIL -->
     <div id="player-modal" class="modal-overlay">
         <div class="modal-content">
             <button id="close-modal-btn" class="modal-close">✕</button>
@@ -167,7 +166,7 @@
             </div>
 
             <div id="video-container-view" class="media-display-box">
-                <div id="youtube-player"></div>
+                <!-- El vídeo de YouTube se cargará dinámicamente aquí al dar play -->
             </div>
 
             <div id="cover-container-view" class="media-display-box" style="display: none;">
