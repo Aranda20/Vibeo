@@ -126,20 +126,12 @@
                                 <h3 id="track-title">Selecciona una canción</h3>
                                 <button id="player-fav-btn" class="heart-btn">♡</button>
                             </div>
-                            <button id="open-modal-btn">⛶ Ampliar</button>
-                        </div>
-                        
-                        <div class="progress-container">
-                            <span id="current-time">0:00</span>
-                            <input type="range" id="progress-bar" min="0" max="100" value="0">
-                            <span id="duration">3:30</span>
+                            <button id="open-modal-btn">⛶ Abrir Reproductor</button>
                         </div>
                     </div>
 
                     <div class="controls">
-                        <button id="prev-btn" class="nav-btn">⏮</button>
                         <button id="play-btn">▶</button>
-                        <button id="next-btn" class="nav-btn">⏭</button>
                     </div>
                 </div>
             </section>
@@ -161,40 +153,6 @@
             <span class="nav-label">Tu Biblioteca</span>
         </div>
     </nav>
-
-    <!-- MODAL EXPANDIDO -->
-    <div id="player-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button id="close-modal-btn" class="modal-close">✕</button>
-            
-            <div class="modal-cover-box">
-                <img id="modal-cover" src="assets/imagenes/logo.png" alt="Portada Expandida" class="modal-cover-art">
-            </div>
-            
-            <div class="modal-track-info-row">
-                <div class="modal-track-info">
-                    <h2 id="modal-track-title">Canción</h2>
-                    <p id="modal-track-artist">Artista</p>
-                </div>
-                <button id="modal-fav-btn" class="heart-btn modal-heart">♡</button>
-            </div>
-
-            <div class="modal-progress-container">
-                <span id="modal-current-time">0:00</span>
-                <input type="range" id="modal-progress-bar" min="0" max="100" value="0">
-                <span id="modal-duration">3:30</span>
-            </div>
-
-            <div class="modal-controls">
-                <button id="modal-prev-btn" class="modal-nav-btn">⏮</button>
-                <button id="modal-play-btn">▶</button>
-                <button id="modal-next-btn" class="modal-nav-btn">⏭</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Audio Player Nativo de Alta Confiabilidad -->
-    <audio id="audio-player"></audio>
 
     <script src="script.js"></script>
 </body>
