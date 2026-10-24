@@ -94,6 +94,33 @@ body {
 .mini-row-cover { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
 .heart-btn { background: none; border: none; color: #ff4a4a; font-size: 1.3rem; cursor: pointer; }
 
+/* Estilos para la subpágina de resultados de búsqueda */
+.search-results-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+.search-results-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--text-white);
+}
+.mobile-search-wrapper {
+    padding: 16px;
+}
+.mobile-search-box input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 20px;
+    border-radius: 50px;
+    background-color: #242424;
+    color: #ffffff;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+}
+
 /* Responsive Móvil */
 @media (max-width: 768px) {
     body { overflow-y: auto; height: auto; background-color: #000000; padding-bottom: 140px; }
@@ -101,10 +128,6 @@ body {
     .app-layout { flex-direction: column; padding: 8px; height: auto; }
     .main-content { padding: 8px; background: none; margin: 0; overflow: visible !important; }
     
-    .mobile-search-wrapper { padding: 12px 8px; }
-    .mobile-search-box input { width: 100%; box-sizing: border-box; padding: 14px 18px; border-radius: 6px; background-color: #242424; color: #ffffff; border: none; outline: none; font-size: 1rem; }
-    .search-placeholder-text { color: var(--text-muted); text-align: center; margin-top: 40px; }
-
     .grid-artistas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .artist-card { padding: 12px; border-radius: 6px; text-align: left; width: auto; }
     .artist-card img { width: 100%; aspect-ratio: 1 / 1; border-radius: 4px; }
