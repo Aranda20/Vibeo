@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibeo - Reproductor</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #000; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; padding: 16px; box-sizing: border-box; }
+        .player-box { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .cover-container { width: 280px; height: 280px; border-radius: 12px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .cover-container img { width: 100%; height: 100%; object-fit: cover; }
+        .track-info { margin-bottom: 24px; width: 100%; }
+        .track-info h2 { margin: 0 0 8px 0; font-size: 1.4rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .track-info p { margin: 0; color: #b3b3b3; font-size: 1rem; }
+        .btn-volver-app { background-color: #242424; color: #fff; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 30px; text-decoration: none; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <div class="player-box">
+        <div class="cover-container">
+            <img id="player-cover" src="assets/imagenes/logo.png" alt="Portada">
+        </div>
+
+        <div class="track-info">
+            <h2 id="player-title">Cargando canción...</h2>
+            <p id="player-artist">Vibeo Music</p>
+        </div>
+
+        <!-- Reproductor de YouTube integrado libre de bloqueos -->
+        <div style="width: 100%; height: 100px; display: flex; justify-content: center; align-items: center;">
+            <iframe id="youtube-audio-frame" width="100%" height="80" src="" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+        </div>
+
+        <a href="index.html" class="btn-volver-app">← Volver a Vibeo</a>
+    </div>
+
+    <script>
+        // Leer los datos pasados por URL desde la página principal
+        const params = new URLSearchParams(window.location.search);
+        const titulo = params.get('titulo') || 'Música';
+        const artista = params.get('artista') || 'Vibeo';
+        const portada = params.get('portada') || 'assets/imagenes/logo.png';
+
+        document.getElementById('player-title').textContent = titulo;
+        document.getElementById('player-artist').textContent = artista;
+        document.getElementById('player-cover').src = portada;
+
+        // Cargar el stream limpio de YouTube basado en la búsqueda exacta
+        const query = encodeURIComponent(`${titulo} ${artista} audio oficial`);
+        document.getElementById('youtube-audio-frame').src = `https://www.youtube.com/embed?listType=search&list=${query}&autoplay=1`;
+    </script>
+</body>
+</html>
+
