@@ -43,7 +43,6 @@ document.getElementById('sidebar-library-btn').addEventListener('click', () => {
 
 function abrirReproductor(cancion) {
     if (!cancion) return;
-    // Redirigir a la segunda página pasando los datos por URL de forma limpia
     const url = `reproductor.html?titulo=${encodeURIComponent(cancion.titulo)}&artista=${encodeURIComponent(cancion.artista)}&portada=${encodeURIComponent(cancion.portadaUrl)}`;
     window.location.href = url;
 }
