@@ -14,7 +14,6 @@
         
         <div class="search-container desktop-search">
             <input type="text" id="search-input" placeholder="¿Qué quieres reproducir?" autocomplete="off">
-            <div id="search-results" class="search-results-dropdown"></div>
         </div>
         
         <div class="auth-buttons">
@@ -74,18 +73,23 @@
                 </section>
             </div>
 
-            <!-- VISTA MÓVIL: BUSCADOR GLOBAL -->
+            <!-- VISTA MÓVIL: BUSCADOR -->
             <div id="view-search-mobile" class="page-view" style="display: none;">
                 <div class="mobile-search-wrapper">
                     <h3>Buscar</h3>
                     <div class="mobile-search-box">
-                        <input type="text" id="search-input-mobile" placeholder="Busca cualquier canción o artista..." autocomplete="off">
-                    </div>
-                    <!-- Resultados organizados estilo Wimbi/Spotify -->
-                    <div id="search-results-mobile" class="search-results-container-mobile">
-                        <p class="search-placeholder-text">¿Qué te apetece escuchar hoy?</p>
+                        <input type="text" id="search-input-mobile" placeholder="¿Qué quieres escuchar?" autocomplete="off">
                     </div>
                 </div>
+            </div>
+
+            <!-- SUBPÁGINA DE RESULTADOS DE BÚSQUEDA (ESTILO WIMBI / PLANTILLA) -->
+            <div id="view-search-results" class="page-view" style="display: none;">
+                <div class="search-results-header">
+                    <button class="btn-back" id="back-from-search-btn">← Volver</button>
+                    <h2 id="search-results-title">Resultados</h2>
+                </div>
+                <div class="songs-list-container" id="search-results-list"></div>
             </div>
 
             <!-- VISTA 2: PERFIL DEL ARTISTA -->
@@ -130,9 +134,6 @@
                             <input type="range" id="progress-bar" min="0" max="100" value="0">
                             <span id="duration">0:00</span>
                         </div>
-                        
-                        <!-- Elemento de audio nativo HTML5 hiper-eficiente -->
-                        <audio id="audio-element"></audio>
                     </div>
 
                     <div class="controls">
@@ -161,7 +162,7 @@
         </div>
     </nav>
 
-    <!-- MODAL EXPANDIDO (ESTILO SPOTIFY / WIMBI) -->
+    <!-- MODAL EXPANDIDO (REPRODUCTOR LIMPIO SIN VÍDEO) -->
     <div id="player-modal" class="modal-overlay">
         <div class="modal-content">
             <button id="close-modal-btn" class="modal-close">✕</button>
@@ -192,6 +193,10 @@
         </div>
     </div>
 
+    <!-- REPRODUCTOR OCULTO DE AUDIO INTEGRADO -->
+    <div id="audio-player-box" style="display:none;"></div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="script.js"></script>
 </body>
 </html>
