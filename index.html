@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibeo - Reproductor Web</title>
+    <title>Vibeo - Reproductor YouTube</title>
     <link rel="stylesheet" href="style.css">
+    <!-- SDK oficial de la API de YouTube -->
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
 
+    <!-- BARRA SUPERIOR (PC) -->
     <header class="top-bar">
         <div class="logo" id="logo-home" style="cursor: pointer;">🎵 Vibeo</div>
         
@@ -23,6 +26,7 @@
     </header>
 
     <div class="app-layout">
+        <!-- BARRA LATERAL (PC) -->
         <aside class="sidebar">
             <div class="library-card">
                 <div class="library-header" id="sidebar-library-btn" style="cursor: pointer;">
@@ -36,9 +40,15 @@
             </div>
         </aside>
 
+        <!-- CONTENIDO PRINCIPAL DINÁMICO -->
         <main class="main-content">
             
+            <!-- VISTA 1: INICIO -->
             <div id="view-home" class="page-view">
+                <div class="home-brand-header">
+                    <img src="assets/imagenes/logo.png" alt="Vibeo Logo" class="home-mini-logo">
+                </div>
+
                 <section class="artists-section">
                     <h3>Artistas Populares</h3>
                     <div class="grid-artistas">
@@ -66,6 +76,7 @@
                 </section>
             </div>
 
+            <!-- VISTA MÓVIL: BUSCADOR -->
             <div id="view-search-mobile" class="page-view" style="display: none;">
                 <div class="mobile-search-wrapper">
                     <h3>Buscar</h3>
@@ -76,6 +87,7 @@
                 </div>
             </div>
 
+            <!-- VISTA 2: PERFIL DEL ARTISTA -->
             <div id="view-artist" class="page-view" style="display: none;">
                 <button class="btn-back" id="back-to-home-btn">← Volver</button>
                 <div class="artist-profile-header">
@@ -88,6 +100,7 @@
                 </div>
             </div>
 
+            <!-- VISTA 3: BIBLIOTECA / FAVORITOS -->
             <div id="view-library" class="page-view" style="display: none;">
                 <button class="btn-back" id="back-to-home-btn-2">← Volver al Inicio</button>
                 <div class="library-profile-header">
@@ -97,6 +110,7 @@
                 <div class="songs-list-container" id="library-songs-list"></div>
             </div>
 
+            <!-- REPRODUCTOR COMPACTO INFERIOR -->
             <section class="player-section">
                 <div class="player-container">
                     <img id="cover" src="" alt="Portada" class="cover-art">
@@ -115,13 +129,11 @@
                             <input type="range" id="progress-bar" min="0" max="100" value="0">
                             <span id="duration">0:00</span>
                         </div>
-                        
-                        <audio id="audio" src=""></audio>
                     </div>
 
                     <div class="controls">
                         <button id="prev-btn" class="nav-btn">⏮</button>
-                        <button id="play-btn">▶ Reproducir</button>
+                        <button id="play-btn">▶</button>
                         <button id="next-btn" class="nav-btn">⏭</button>
                     </div>
                 </div>
@@ -129,6 +141,7 @@
         </main>
     </div>
 
+    <!-- MENÚ DE NAVEGACIÓN INFERIOR (MÓVIL) -->
     <nav class="bottom-nav">
         <div class="nav-item active" id="nav-home">
             <span class="nav-icon">🏠</span>
@@ -144,10 +157,27 @@
         </div>
     </nav>
 
+    <!-- MODAL EXPANDIDO MÓVIL (ESTILO WIMBI / SPOTIFY) -->
     <div id="player-modal" class="modal-overlay">
         <div class="modal-content">
-            <button id="close-modal-btn" class="modal-close">✕ Cerrar</button>
-            <img id="modal-cover" src="" alt="Portada Expandida" class="modal-cover-art">
+            <button id="close-modal-btn" class="modal-close">✕</button>
+            
+            <!-- Selector de Pestañas: Vídeo / Portada -->
+            <div class="modal-tabs">
+                <button class="tab-btn active" id="tab-video-btn">Vídeo</button>
+                <button class="tab-btn" id="tab-cover-btn">Portada</button>
+            </div>
+
+            <!-- Contenedor del Vídeo de YouTube -->
+            <div id="video-container-view" class="media-display-box">
+                <div id="youtube-player"></div>
+            </div>
+
+            <!-- Contenedor de la Portada -->
+            <div id="cover-container-view" class="media-display-box" style="display: none;">
+                <img id="modal-cover" src="" alt="Portada Expandida" class="modal-cover-art">
+            </div>
+            
             <div class="modal-track-info-row">
                 <div class="modal-track-info">
                     <h2 id="modal-track-title">Canción</h2>
@@ -155,14 +185,16 @@
                 </div>
                 <button id="modal-fav-btn" class="heart-btn modal-heart">♡</button>
             </div>
+
             <div class="modal-progress-container">
                 <span id="modal-current-time">0:00</span>
                 <input type="range" id="modal-progress-bar" min="0" max="100" value="0">
                 <span id="modal-duration">0:00</span>
             </div>
+
             <div class="modal-controls">
                 <button id="modal-prev-btn" class="modal-nav-btn">⏮</button>
-                <button id="modal-play-btn">▶ Reproducir</button>
+                <button id="modal-play-btn">▶</button>
                 <button id="modal-next-btn" class="modal-nav-btn">⏭</button>
             </div>
         </div>
