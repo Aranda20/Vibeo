@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibeo - Reproductor Musical</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="player.css">
+</head>
+<body>
+
+    <!-- ICONOS (sprite SVG) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 001.5.86l10.5-6.5a1 1 0 000-1.72L9.5 4.64A1 1 0 008 5.5z"/></symbol>
+        <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></symbol>
+        <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 6.2v11.6a.8.8 0 001.2.7l8.4-5.8a.8.8 0 000-1.4L7.2 5.5A.8.8 0 006 6.2z"/><rect x="16.8" y="5" width="2.6" height="14" rx="1.1"/></symbol>
+        <symbol id="i-prev" viewBox="0 0 24 24"><path d="M18 6.2v11.6a.8.8 0 01-1.2.7l-8.4-5.8a.8.8 0 010-1.4l8.4-5.8A.8.8 0 0118 6.2z"/><rect x="4.6" y="5" width="2.6" height="14" rx="1.1"/></symbol>
+        <symbol id="i-shuffle" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></symbol>
+        <symbol id="i-repeat" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></symbol>
+        <symbol id="i-repeat-one" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/><path d="M11 10h1v4"/></symbol>
+        <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 000-7.8z"/></symbol>
+        <symbol id="i-chevron-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+        <symbol id="i-chevron-left" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+        <symbol id="i-chevron-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+        <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+        <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+        <symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    </svg>
+
+    <!-- BARRA SUPERIOR (PC) -->
+    <header class="top-bar">
+        <div class="logo" id="logo-home" style="cursor: pointer;"><svg class="ic"><use href="#i-music"/></svg> Vibeo</div>
+
+        <div class="search-container desktop-search">
+            <input type="text" id="search-input" placeholder="¿Qué quieres reproducir?" autocomplete="off">
+        </div>
+
+        <div class="auth-buttons">
+            <button class="btn-transparent">Regístrate</button>
+            <button class="btn-white">Iniciar sesión</button>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        <!-- BARRA LATERAL (PC) -->
+        <aside class="sidebar">
+            <div class="library-card">
+                <div class="library-header" id="sidebar-library-btn" style="cursor: pointer;">
+                    <span><svg class="ic"><use href="#i-music"/></svg> Tu biblioteca</span>
+                </div>
+                <div class="create-playlist">
+                    <h4>Tus Canciones Favoritas</h4>
+                    <p>Escucha las canciones que te han gustado</p>
+                    <button class="btn-white-small" id="view-favorites-btn">Ver Favoritos</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL DINÁMICO -->
+        <main class="main-content">
+
+            <!-- VISTA 1: INICIO -->
+            <div id="view-home" class="page-view">
+                <div class="home-brand-header">
+                    <img src="assets/imagenes/logo.png" alt="Vibeo Logo" class="home-mini-logo">
+                </div>
+
+                <section class="artists-section">
+                    <h3>Artistas Populares</h3>
+                    <div class="grid-artistas">
+                        <div class="artist-card" data-artista="Miguel Bosé">
+                            <img src="assets/imagenes/portada1.jfif" alt="Miguel Bosé">
+                            <div class="artist-name">Miguel Bosé</div>
+                            <div class="artist-role">Artista</div>
+                        </div>
+                        <div class="artist-card" data-artista="Leo Dan">
+                            <img src="assets/imagenes/portada2.jfif" alt="Leo Dan">
+                            <div class="artist-name">Leo Dan</div>
+                            <div class="artist-role">Artista</div>
+                        </div>
+                        <div class="artist-card" data-artista="Joan Sebastian">
+                            <img src="assets/imagenes/portada4.jfif" alt="Joan Sebastian">
+                            <div class="artist-name">Joan Sebastian</div>
+                            <div class="artist-role">Artista</div>
+                        </div>
+                        <div class="artist-card" data-artista="Los Iracundos">
+                            <img src="assets/imagenes/portada5.jfif" alt="Los Iracundos">
+                            <div class="artist-name">Los Iracundos</div>
+                            <div class="artist-role">Artista</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- VISTA MÓVIL: BUSCADOR -->
+            <div id="view-search-mobile" class="page-view" style="display: none;">
+                <div class="mobile-search-wrapper">
+                    <h3>Buscar</h3>
+                    <div class="mobile-search-box">
+                        <input type="text" id="search-input-mobile" placeholder="Escribe y presiona Enter..." autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUBPÁGINA DE RESULTADOS DE BÚSQUEDA -->
+            <div id="view-search-results" class="page-view" style="display: none;">
+                <div class="search-results-header">
+                    <button class="btn-back" id="back-from-search-btn"><svg class="ic"><use href="#i-chevron-left"/></svg> Volver</button>
+                    <h2 id="search-results-title">Resultados</h2>
+                </div>
+                <div class="chips" id="search-chips">
+                    <button class="chip active" data-filtro="todo">Todo</button>
+                    <button class="chip" data-filtro="canciones">Canciones</button>
+                    <button class="chip" data-filtro="artistas">Artistas</button>
+                    <button class="chip" data-filtro="albumes">Álbumes</button>
+                </div>
+                <div id="search-results-body"></div>
+            </div>
+
+            <!-- VISTA 2: PERFIL DEL ARTISTA / ÁLBUM -->
+            <div id="view-artist" class="page-view" style="display: none;">
+                <button class="btn-back" id="back-to-home-btn"><svg class="ic"><use href="#i-chevron-left"/></svg> Volver</button>
+                <div class="artist-profile-header">
+                    <h1 id="artist-profile-name">Nombre Artista</h1>
+                    <p class="verified-badge" id="artist-badge">Artista</p>
+                </div>
+                <div class="artist-songs-section">
+                    <h3 id="artist-songs-title">Canciones populares</h3>
+                    <div class="songs-list-container" id="artist-songs-list"></div>
+                    <h3 id="artist-albums-title" style="display:none; margin-top:28px;">Álbumes</h3>
+                    <div class="albums-grid" id="artist-albums-list"></div>
+                </div>
+            </div>
+
+            <!-- VISTA 3: BIBLIOTECA / FAVORITOS -->
+            <div id="view-library" class="page-view" style="display: none;">
+                <button class="btn-back" id="back-to-home-btn-2"><svg class="ic"><use href="#i-chevron-left"/></svg> Volver al Inicio</button>
+                <div class="library-profile-header">
+                    <h1>Tus Canciones Favoritas</h1>
+                    <p id="fav-count">0 canciones guardadas</p>
+                </div>
+                <div class="songs-list-container" id="library-songs-list"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MENÚ DE NAVEGACIÓN INFERIOR (MÓVIL) -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" id="nav-home">
+            <span class="nav-icon"><svg class="ic"><use href="#i-home"/></svg></span>
+            <span class="nav-label">Inicio</span>
+        </div>
+        <div class="nav-item" id="nav-search">
+            <span class="nav-icon"><svg class="ic"><use href="#i-search"/></svg></span>
+            <span class="nav-label">Buscar</span>
+        </div>
+        <div class="nav-item" id="nav-library">
+            <span class="nav-icon"><svg class="ic"><use href="#i-music"/></svg></span>
+            <span class="nav-label">Tu Biblioteca</span>
+        </div>
+    </nav>
+
+    <!-- REPRODUCTOR PERSISTENTE -->
+    <div id="vp-mini" class="vp-mini">
+        <img id="vp-mini-cover" src="assets/imagenes/logo.png" alt="">
+        <div class="vp-mini-info">
+            <div id="vp-mini-title"></div>
+            <div id="vp-mini-artist"></div>
+        </div>
+        <button id="vp-mini-play" aria-label="Reproducir o pausar"><svg class="ic solid"><use href="#i-play"/></svg></button>
+    </div>
+
+    <div id="vp-overlay" class="vp-overlay vp-tab-cover">
+        <div class="vp-top">
+            <button id="vp-close" aria-label="Cerrar"><svg class="ic"><use href="#i-chevron-down"/></svg></button>
+            <div class="vp-from"><small>REPRODUCIENDO</small><b id="vp-from-title"></b></div>
+            <span style="width:40px"></span>
+        </div>
+        <div class="vp-tabs">
+            <button data-tab="video">Vídeo</button>
+            <button data-tab="cover" class="active">Portada</button>
+        </div>
+        <div class="vp-stage" id="vp-stage">
+            <img id="vp-cover" src="assets/imagenes/logo.png" alt="Portada">
+            <div id="vp-video-box"><div id="yt-player"></div></div>
+            <div class="vp-spinner"></div>
+            <div class="vp-msg" id="vp-msg"></div>
+        </div>
+        <div class="vp-info">
+            <div><h2 id="vp-title"></h2><p id="vp-artist"></p></div>
+            <button id="vp-fav" aria-label="Favorito"><svg class="ic"><use href="#i-heart"/></svg></button>
+        </div>
+        <div class="vp-progress-row">
+            <input type="range" id="vp-progress" min="0" max="100" step="0.1" value="0">
+            <div class="vp-times"><span id="vp-time-cur">0:00</span><span id="vp-time-tot">0:00</span></div>
+        </div>
+        <div class="vp-controls">
+            <button id="vp-shuffle" aria-label="Aleatorio"><svg class="ic"><use href="#i-shuffle"/></svg></button>
+            <button id="vp-prev" aria-label="Anterior"><svg class="ic solid"><use href="#i-prev"/></svg></button>
+            <button id="vp-play" aria-label="Reproducir o pausar"><svg class="ic solid"><use href="#i-play"/></svg></button>
+            <button id="vp-next" aria-label="Siguiente"><svg class="ic solid"><use href="#i-next"/></svg></button>
+            <button id="vp-repeat" aria-label="Repetir"><svg class="ic"><use href="#i-repeat"/></svg></button>
+        </div>
+        <button id="vp-queue-btn"><svg class="ic"><use href="#i-list"/></svg> Cola</button>
+
+        <div id="vp-queue" class="vp-queue">
+            <div class="vp-queue-head">
+                <h3>Cola</h3>
+                <button id="vp-queue-close" aria-label="Cerrar cola"><svg class="ic"><use href="#i-x"/></svg></button>
+            </div>
+            <div class="vp-auto-row">
+                <div><b>Reproducción automática</b><small>Agrega canciones similares al final de la cola</small></div>
+                <label class="vp-switch"><input type="checkbox" id="vp-autoplay" checked><span></span></label>
+            </div>
+            <div id="vp-queue-body"></div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="player.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
