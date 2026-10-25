@@ -1,5 +1,4 @@
 let playlistActual = [];
-let favoritos = JSON.parse(localStorage.getItem('vibeo_favs')) || [];
 
 const searchInputMobile = document.getElementById('search-input-mobile');
 const searchInputDesktop = document.getElementById('search-input');
@@ -10,11 +9,16 @@ const searchResultsList = document.getElementById('search-results-list');
 const searchResultsTitle = document.getElementById('search-results-title');
 const viewArtist = document.getElementById('view-artist');
 const viewLibrary = document.getElementById('view-library');
+const librarySongsList = document.getElementById('library-songs-list');
 
 const navHome = document.getElementById('nav-home');
 const navSearch = document.getElementById('nav-search');
 const navLibrary = document.getElementById('nav-library');
 const navItems = document.querySelectorAll('.nav-item');
+
+function getFavoritos() {
+    return JSON.parse(localStorage.getItem('vibeo_favs')) || [];
+}
 
 function cambiarVista(vistaActiva) {
     viewHome.style.display = 'none';
@@ -30,16 +34,22 @@ function resetActiveNav(activeItem) {
     activeItem.classList.add('active');
 }
 
+function irABiblioteca() {
+    resetActiveNav(navLibrary);
+    renderizarBiblioteca();
+    cambiarVista(viewLibrary);
+}
+
 navHome.addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
 navSearch.addEventListener('click', () => { resetActiveNav(navSearch); cambiarVista(viewSearchMobile); });
-navLibrary.addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
+navLibrary.addEventListener('click', irABiblioteca);
 
 document.getElementById('logo-home').addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
 document.getElementById('back-to-home-btn').addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
 document.getElementById('back-to-home-btn-2').addEventListener('click', () => { resetActiveNav(navHome); cambiarVista(viewHome); });
 document.getElementById('back-from-search-btn').addEventListener('click', () => { cambiarVista(viewSearchMobile); });
-document.getElementById('view-favorites-btn').addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
-document.getElementById('sidebar-library-btn').addEventListener('click', () => { resetActiveNav(navLibrary); renderizarBiblioteca(); cambiarVista(viewLibrary); });
+document.getElementById('view-favorites-btn').addEventListener('click', irABiblioteca);
+document.getElementById('sidebar-library-btn').addEventListener('click', irABiblioteca);
 
 function abrirReproductor(cancion) {
     if (!cancion) return;
@@ -47,66 +57,92 @@ function abrirReproductor(cancion) {
     window.location.href = url;
 }
 
+// Convierte los resultados de iTunes en nuestro formato de canción
+function mapearResultados(results) {
+    return results.map(item => ({
+        id: item.trackId,
+        titulo: item.trackName,
+        artista: item.artistName,
+        portadaUrl: item.artworkUrl100.replace('100x100bb.jpg', '500x500bb.jpg')
+    }));
+}
+
+// Dibuja una lista de canciones dentro de un contenedor
+function pintarCanciones(canciones, contenedor) {
+    contenedor.innerHTML = '';
+    canciones.forEach((cancion, index) => {
+        const fila = document.createElement('div');
+        fila.classList.add('song-row-item');
+
+        const izquierda = document.createElement('div');
+        izquierda.classList.add('song-left-part');
+
+        const num = document.createElement('span');
+        num.classList.add('track-number');
+        num.textContent = index + 1;
+
+        const img = document.createElement('img');
+        img.src = cancion.portadaUrl;
+        img.classList.add('mini-row-cover');
+
+        const textos = document.createElement('div');
+        const nombre = document.createElement('div');
+        nombre.classList.add('track-name-text');
+        nombre.style.fontWeight = 'bold';
+        nombre.textContent = cancion.titulo;
+        const art = document.createElement('div');
+        art.style.fontSize = '0.8rem';
+        art.style.color = '#b3b3b3';
+        art.textContent = cancion.artista;
+        textos.appendChild(nombre);
+        textos.appendChild(art);
+
+        izquierda.appendChild(num);
+        izquierda.appendChild(img);
+        izquierda.appendChild(textos);
+
+        const icono = document.createElement('span');
+        icono.classList.add('play-row-icon');
+        icono.textContent = '▶';
+
+        fila.appendChild(izquierda);
+        fila.appendChild(icono);
+        fila.addEventListener('click', () => Vibeo.reproducirLista(canciones, index));
+        contenedor.appendChild(fila);
+    });
+}
+
+function mensaje(contenedor, texto) {
+    contenedor.innerHTML = `<p style="color:#b3b3b3; padding:20px; text-align:center;">${texto}</p>`;
+}
+
 function ejecutarBusqueda(query) {
     if (!query || query.trim().length === 0) return;
 
     searchResultsTitle.textContent = `Resultados para "${query}"`;
-    searchResultsList.innerHTML = '<p style="color:#b3b3b3; padding:20px; text-align:center;">Buscando canciones...</p>';
+    mensaje(searchResultsList, 'Buscando canciones...');
     cambiarVista(viewSearchResults);
 
     fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=song&limit=25`)
         .then(res => res.json())
         .then(data => {
-            searchResultsList.innerHTML = '';
             if (data.results && data.results.length > 0) {
-                playlistActual = data.results.map(item => ({
-                    id: item.trackId,
-                    titulo: item.trackName,
-                    artista: item.artistName,
-                    portadaUrl: item.artworkUrl100.replace('100x100bb.jpg', '500x500bb.jpg')
-                }));
-
-                playlistActual.forEach((cancion, index) => {
-                    const fila = document.createElement('div');
-                    fila.classList.add('song-row-item');
-                    fila.innerHTML = `
-                        <div class="song-left-part">
-                            <span class="track-number">${index + 1}</span>
-                            <img src="${cancion.portadaUrl}" class="mini-row-cover">
-                            <div>
-                                <div class="track-name-text" style="font-weight:bold;">${cancion.titulo}</div>
-                                <div style="font-size:0.8rem; color:#b3b3b3;">${cancion.artista}</div>
-                            </div>
-                        </div>
-                        <span class="play-row-icon">▶</span>
-                    `;
-
-                    fila.addEventListener('click', () => {
-                        abrirReproductor(cancion);
-                    });
-
-                    searchResultsList.appendChild(fila);
-                });
+                playlistActual = mapearResultados(data.results);
+                pintarCanciones(playlistActual, searchResultsList);
             } else {
-                searchResultsList.innerHTML = '<p style="color:#b3b3b3; padding:20px; text-align:center;">No se encontraron resultados.</p>';
+                mensaje(searchResultsList, 'No se encontraron resultados.');
             }
         })
-        .catch(() => {
-            searchResultsList.innerHTML = '<p style="color:#b3b3b3; padding:20px; text-align:center;">Error al realizar la búsqueda.</p>';
-        });
+        .catch(() => mensaje(searchResultsList, 'Error al realizar la búsqueda.'));
 }
 
 searchInputMobile.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        ejecutarBusqueda(searchInputMobile.value);
-    }
+    if (e.key === 'Enter') ejecutarBusqueda(searchInputMobile.value);
 });
 
 if (searchInputDesktop) {
     searchInputDesktop.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            ejecutarBusqueda(searchInputDesktop.value);
-        }
+        if (e.key === 'Enter') ejecutarBusqueda(searchInputDesktop.value);
     });
 }
 
@@ -115,48 +151,29 @@ document.querySelectorAll('.artist-card').forEach(card => {
         const nombreArtista = card.getAttribute('data-artista');
         document.getElementById('artist-profile-name').textContent = nombreArtista;
         const artistSongsList = document.getElementById('artist-songs-list');
-        artistSongsList.innerHTML = '<p style="color:#b3b3b3; padding:10px;">Cargando...</p>';
+        mensaje(artistSongsList, 'Cargando...');
         cambiarVista(viewArtist);
 
         fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(nombreArtista)}&media=music&entity=song&limit=15`)
             .then(res => res.json())
             .then(data => {
-                artistSongsList.innerHTML = '';
-                if (data.results) {
-                    playlistActual = data.results.map(item => ({
-                        id: item.trackId,
-                        titulo: item.trackName,
-                        artista: item.artistName,
-                        portadaUrl: item.artworkUrl100.replace('100x100bb.jpg', '500x500bb.jpg')
-                    }));
-
-                    playlistActual.forEach((cancion, index) => {
-                        const fila = document.createElement('div');
-                        fila.classList.add('song-row-item');
-                        fila.innerHTML = `
-                            <div class="song-left-part">
-                                <span class="track-number">${index + 1}</span>
-                                <img src="${cancion.portadaUrl}" class="mini-row-cover">
-                                <div>
-                                    <div class="track-name-text" style="font-weight:bold;">${cancion.titulo}</div>
-                                    <div style="font-size:0.8rem; color:#b3b3b3;">${cancion.artista}</div>
-                                </div>
-                            </div>
-                            <span class="play-row-icon">▶</span>
-                        `;
-                        fila.addEventListener('click', () => {
-                            abrirReservado = cancion;
-                            abrirReproductor(cancion);
-                        });
-                        artistSongsList.appendChild(fila);
-                    });
+                if (data.results && data.results.length > 0) {
+                    playlistActual = mapearResultados(data.results);
+                    pintarCanciones(playlistActual, artistSongsList);
+                } else {
+                    mensaje(artistSongsList, 'No se encontraron canciones.');
                 }
-            });
+            })
+            .catch(() => mensaje(artistSongsList, 'Error al cargar las canciones.'));
     });
 });
 
 function renderizarBiblioteca() {
-    librarySongsList.innerHTML = '';
+    const favoritos = getFavoritos();
     document.getElementById('fav-count').textContent = `${favoritos.length} canciones guardadas`;
+    if (favoritos.length === 0) {
+        mensaje(librarySongsList, 'Aún no tienes favoritas. Toca el ♡ en el reproductor para guardarlas.');
+    } else {
+        pintarCanciones(favoritos, librarySongsList);
+    }
 }
-
